@@ -17,6 +17,8 @@ public class InitialScreen extends ScreenAdapter {
     FitViewport viewport;
     ShapeRenderer shapeRenderer;
 
+    Ball ball;
+
     float WORLD_SIZE = 100.0f;
 
     @Override
@@ -25,13 +27,16 @@ public class InitialScreen extends ScreenAdapter {
 
         shapeRenderer = new ShapeRenderer();
         viewport = new FitViewport(WORLD_SIZE, WORLD_SIZE);
+
+        ball = new Ball(viewport);
     }
 
     @Override
     public void resize(int width, int height) {
         Gdx.app.log(TAG, "resize");
-
         viewport.update(width, height, true);
+
+        ball.init();
     }
 
     @Override
@@ -44,6 +49,9 @@ public class InitialScreen extends ScreenAdapter {
         viewport.apply();
         shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
 
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        ball.render(delta, shapeRenderer);
+        shapeRenderer.end();
     }
 
     @Override
