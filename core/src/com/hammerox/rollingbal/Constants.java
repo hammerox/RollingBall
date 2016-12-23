@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.Vector2;
 public class Constants {
 
     // World constants
+    public final static float   WORLD_SIZE = 100.0f;
     public final static Vector2 WORLD_GRAVITY = new Vector2(0, -250.0f);
 
     // Ball constants

@@ -4,45 +4,42 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
+
+import static com.hammerox.rollingbal.Constants.WORLD_SIZE;
 
 /**
  * Created by Mauricio on 22-Dec-16.
  */
 
-public class InitialScreen extends ScreenAdapter {
+public class TestScreen extends ScreenAdapter {
 
-    public final static String TAG = InitialScreen.class.getName();
+    public final static String TAG = TestScreen.class.getName();
 
-    FitViewport viewport;
-    ShapeRenderer shapeRenderer;
+    private ExtendViewport viewport;
+    private ShapeRenderer shapeRenderer;
 
-    Ball ball;
-
-    float WORLD_SIZE = 100.0f;
+    private Ball ball;
 
     @Override
     public void show() {
         Gdx.app.log(TAG, "show");
 
         shapeRenderer = new ShapeRenderer();
-        viewport = new FitViewport(WORLD_SIZE, WORLD_SIZE);
+        viewport = new ExtendViewport(WORLD_SIZE, WORLD_SIZE);
 
         ball = new Ball(viewport);
+        ball.init(WORLD_SIZE/2, WORLD_SIZE/2);
     }
 
     @Override
     public void resize(int width, int height) {
         Gdx.app.log(TAG, "resize");
         viewport.update(width, height, true);
-
-        ball.init();
     }
 
     @Override
     public void render(float delta) {
-        super.render(delta);
-
         Gdx.gl.glClearColor(0.5f, 0.5f, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -55,7 +52,26 @@ public class InitialScreen extends ScreenAdapter {
     }
 
     @Override
+    public void hide() {
+        super.hide();
+        Gdx.app.log(TAG, "hide");
+    }
+
+    @Override
+    public void pause() {
+        super.pause();
+        Gdx.app.log(TAG, "pause");
+    }
+
+    @Override
+    public void resume() {
+        super.resume();
+        Gdx.app.log(TAG, "resume");
+    }
+
+    @Override
     public void dispose() {
+        Gdx.app.log(TAG, "dispose");
         shapeRenderer.dispose();
     }
 }

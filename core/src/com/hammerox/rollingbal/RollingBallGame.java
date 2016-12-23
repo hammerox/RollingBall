@@ -4,13 +4,13 @@ import com.badlogic.gdx.Game;
 
 public class RollingBallGame extends Game {
 
-    InitialScreen initialScreen;
+    TestScreen testScreen;
 
 	@Override
 	public void create () {
-        initialScreen = new InitialScreen();
+        testScreen = new TestScreen();
 
-        setScreen(initialScreen);
+        setScreen(testScreen);
     }
 
 }
