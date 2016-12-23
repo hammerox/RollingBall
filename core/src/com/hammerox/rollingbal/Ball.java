@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -19,7 +20,12 @@ public class Ball extends InputAdapter {
 
     private Vector2 position;
     private Vector2 velocity;
+
+    private Vector2 lastPosition;
+    private Vector2 lastVelocity;
+
     private boolean isJumping = false;
+
 
     public Ball(Viewport viewport) {
         this.viewport = viewport;
@@ -27,55 +33,67 @@ public class Ball extends InputAdapter {
         Gdx.input.setInputProcessor(this);
     }
 
+
     public void init(float x, float y) {
         position = new Vector2(x, y);
         velocity = new Vector2(0, 0);
+
+        lastPosition = position.cpy();
+        lastVelocity = velocity.cpy();
     }
 
-    public void render(float delta, ShapeRenderer shapeRenderer) {
 
+    public void update(float delta) {
         // INPUT RESPONSE
-            // Accelerometer
+        // Accelerometer
         float accelerometer = Gdx.input.getAccelerometerY();
         velocity.x = accelerometer * delta * ACCELEROMETER_FACTOR;
 
-            // A
+        // A
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
             velocity.x = - BALL_INPUT_VELOCITY;
         }
-            // D
+        // D
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
             velocity.x = BALL_INPUT_VELOCITY;
         }
 
         // UPDATE
-            // Jump status
+        // Jump status
         if (isJumping && velocity.y <= 0) isJumping = false;
 
-            // Position
+        // Position
         velocity.mulAdd(WORLD_GRAVITY, delta);
         position.mulAdd(velocity, delta);
 
         // COLLISIONS
-            // With walls
+        // With walls
         if (position.x - BALL_RADIUS < 0) {
             position.x = BALL_RADIUS;
         } else if (position.x + BALL_RADIUS > viewport.getWorldWidth()) {
             position.x = viewport.getWorldWidth() - BALL_RADIUS;
         }
 
-            // With ground
-        if (position.y < 0) {
+        // With ground
+        if (position.y - BALL_RADIUS < 0) {
             velocity.y = - velocity.y * BALL_BOUNCE_ABSORPTION;
-            position.y = 0;
+            position.y = BALL_RADIUS;
         }
+    }
 
+
+    public void render(ShapeRenderer shapeRenderer) {
+        // FINISH UPDATING
+        lastPosition.set(position);
+        lastVelocity.set(velocity);
+
+        // RENDER
         // Todo - ERASE THIS: View jump zone
         shapeRenderer.setColor(0,0,1,1);
         shapeRenderer.rect(0,0,viewport.getScreenWidth(), BALL_JUMP_ERROR);
 
         shapeRenderer.setColor(0.5f, 0, 0, 1);
-        shapeRenderer.circle(position.x, position.y + BALL_RADIUS, BALL_RADIUS, 50);
+        shapeRenderer.circle(position.x, position.y, BALL_RADIUS, 50);
     }
 
     @Override
@@ -117,7 +135,7 @@ public class Ball extends InputAdapter {
 
 
     public void jump() {
-        if (position.y < BALL_JUMP_ERROR) {
+        if (position.y - BALL_RADIUS < BALL_JUMP_ERROR) {
             velocity.y = BALL_JUMP_SPEED;
             isJumping = true;
         }
@@ -129,4 +147,31 @@ public class Ball extends InputAdapter {
             isJumping = false;
         }
     }
+
+    public boolean landedOnPlatform(Platform platform) {
+        if (!isJumping) {
+            Vector2 ball1 = lastPosition.cpy().add(BALL_COLLISION_VECTOR);
+            Vector2 ball2 = position.cpy().add(BALL_COLLISION_VECTOR);
+            Vector2 plat1 = platform.position.cpy().add(0, platform.size.y);
+            Vector2 plat2 = platform.position.cpy().add(platform.size);
+
+            Vector2 intersection = new Vector2();
+
+            boolean isIntersecting = Intersector.intersectSegments(
+                    ball1,
+                    ball2,
+                    plat1,
+                    plat2,
+                    intersection
+            );
+
+            if (isIntersecting) {
+                position.y = plat1.y + BALL_RADIUS;
+                velocity.y = 0;
+            }
+        }
+
+        return false;
+    }
+
 }
