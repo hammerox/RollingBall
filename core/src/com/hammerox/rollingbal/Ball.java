@@ -17,6 +17,7 @@ public class Ball extends InputAdapter {
 
     private Vector2 position;
     private Vector2 velocity;
+    private boolean isJumping = false;
 
     public Ball(Viewport viewport) {
         this.viewport = viewport;
@@ -31,7 +32,7 @@ public class Ball extends InputAdapter {
 
     public void render(float delta, ShapeRenderer shapeRenderer) {
 
-        // Input response
+        // INPUT RESPONSE
             // A
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
             velocity.x = - Constants.BALL_INPUT_VELOCITY;
@@ -44,18 +45,23 @@ public class Ball extends InputAdapter {
         float accelerometer = Gdx.input.getAccelerometerY();
         velocity.x = accelerometer * delta * Constants.ACCELEROMETER_FACTOR;
 
-        // Position update
+        // UPDATE
+            // Jump status
+        if (isJumping && velocity.y <= 0) isJumping = false;
+
+            // Position
         velocity.mulAdd(Constants.WORLD_GRAVITY, delta);
         position.mulAdd(velocity, delta);
 
-        // Collision with walls
+        // COLLISIONS
+            // With walls
         if (position.x - Constants.BALL_RADIUS < 0) {
             position.x = Constants.BALL_RADIUS;
         } else if (position.x + Constants.BALL_RADIUS > viewport.getWorldWidth()) {
             position.x = viewport.getWorldWidth() - Constants.BALL_RADIUS;
         }
 
-        // Collision with ground
+            // With ground
         if (position.y < 0) {
             velocity.y = - velocity.y * Constants.BALL_BOUNCE_ABSORPTION;
             position.y = 0;
@@ -84,7 +90,17 @@ public class Ball extends InputAdapter {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         if (position.y < Constants.BALL_JUMP_ERROR) {
             velocity.y = Constants.BALL_JUMP_SPEED;
+            isJumping = true;
         }
-        return super.touchDown(screenX, screenY, pointer, button);
+        return false;
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        if (isJumping) {
+            velocity.y = 0;
+            isJumping = false;
+        }
+        return false;
     }
 }
