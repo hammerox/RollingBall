@@ -24,6 +24,7 @@ public class Ball extends InputAdapter {
     private Vector2 lastPosition;
     private Vector2 lastVelocity;
 
+    private boolean isLanded = false;
     private boolean isJumping = false;
 
 
@@ -45,39 +46,38 @@ public class Ball extends InputAdapter {
 
     public void update(float delta) {
         // INPUT RESPONSE
-        // Accelerometer
+            // Accelerometer
         float accelerometer = Gdx.input.getAccelerometerY();
         velocity.x = accelerometer * delta * ACCELEROMETER_FACTOR;
 
-        // A
+            // A
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
             velocity.x = - BALL_INPUT_VELOCITY;
         }
-        // D
+            // D
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
             velocity.x = BALL_INPUT_VELOCITY;
         }
 
         // UPDATE
-        // Jump status
+            // Jump status
         if (isJumping && velocity.y <= 0) isJumping = false;
 
-        // Position
+            // Position
         velocity.mulAdd(WORLD_GRAVITY, delta);
         position.mulAdd(velocity, delta);
 
         // COLLISIONS
-        // With walls
+            // With walls
         if (position.x - BALL_RADIUS < 0) {
             position.x = BALL_RADIUS;
         } else if (position.x + BALL_RADIUS > viewport.getWorldWidth()) {
             position.x = viewport.getWorldWidth() - BALL_RADIUS;
         }
 
-        // With ground
+            // With ground
         if (position.y - BALL_RADIUS < 0) {
-            velocity.y = - velocity.y * BALL_BOUNCE_ABSORPTION;
-            position.y = BALL_RADIUS;
+            land(0);
         }
     }
 
@@ -135,9 +135,10 @@ public class Ball extends InputAdapter {
 
 
     public void jump() {
-        if (position.y - BALL_RADIUS < BALL_JUMP_ERROR) {
+        if (isLanded) {
             velocity.y = BALL_JUMP_SPEED;
             isJumping = true;
+            isLanded = false;
         }
     }
 
@@ -148,6 +149,13 @@ public class Ball extends InputAdapter {
         }
     }
 
+    public void land(float y) {
+        // TODO - BUG: When BALL_BOUNCE_ABSORPTION isn't 0, ball doesn't bounce on platforms
+        velocity.y = - velocity.y * BALL_BOUNCE_ABSORPTION;
+        position.y = y + BALL_RADIUS;
+        isLanded = true;
+    }
+
     public boolean landedOnPlatform(Platform platform) {
         if (!isJumping) {
             Vector2 ball1 = lastPosition.cpy().add(BALL_COLLISION_VECTOR);
@@ -155,19 +163,14 @@ public class Ball extends InputAdapter {
             Vector2 plat1 = platform.position.cpy().add(0, platform.size.y);
             Vector2 plat2 = platform.position.cpy().add(platform.size);
 
-            Vector2 intersection = new Vector2();
+            boolean isTouching =
+                    Intersector.intersectSegments(ball1, ball2, plat1, plat2, null);
 
-            boolean isIntersecting = Intersector.intersectSegments(
-                    ball1,
-                    ball2,
-                    plat1,
-                    plat2,
-                    intersection
-            );
 
-            if (isIntersecting) {
-                position.y = plat1.y + BALL_RADIUS;
-                velocity.y = 0;
+            // TODO - BUG: After landing on platform and falling, ball can jump on midair.
+            if (isTouching) {
+                land(plat1.y);
+                return true;
             }
         }
 
