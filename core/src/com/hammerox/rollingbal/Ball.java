@@ -57,9 +57,13 @@ public class Ball extends InputAdapter {
 
         // Collision with ground
         if (position.y < 0) {
-            velocity.y = - velocity.y / 1.2f;
+            velocity.y = - velocity.y * Constants.BALL_BOUNCE_ABSORPTION;
             position.y = 0;
         }
+
+        // Todo - TESTING: ERASE THIS
+        shapeRenderer.setColor(0,0,1,1);
+        shapeRenderer.rect(0,0,viewport.getScreenWidth(), Constants.BALL_JUMP_ERROR);
 
         shapeRenderer.setColor(0.5f, 0, 0, 1);
         shapeRenderer.circle(position.x, position.y + Constants.BALL_RADIUS, Constants.BALL_RADIUS, 50);
@@ -78,7 +82,9 @@ public class Ball extends InputAdapter {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        velocity.y += Constants.BALL_JUMP_SPEED;
+        if (position.y < Constants.BALL_JUMP_ERROR) {
+            velocity.y = Constants.BALL_JUMP_SPEED;
+        }
         return super.touchDown(screenX, screenY, pointer, button);
     }
 }
