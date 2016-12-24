@@ -4,8 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+
+import java.util.LinkedList;
+import java.util.List;
 
 import static com.hammerox.rollingbal.Constants.WORLD_SIZE;
 
@@ -21,7 +23,7 @@ public class TestScreen extends ScreenAdapter {
     private ShapeRenderer shapeRenderer;
 
     private Ball ball;
-    private Platform platform;
+    private List<Platform> allPlatforms;
 
     @Override
     public void show() {
@@ -33,7 +35,10 @@ public class TestScreen extends ScreenAdapter {
         ball = new Ball(viewport);
         ball.init(WORLD_SIZE/2, WORLD_SIZE/2);
 
-        platform = new Platform(new Vector2(WORLD_SIZE/3, WORLD_SIZE/3));
+        allPlatforms = new LinkedList<Platform>();
+        for (int i = 0; i < 5; i++) {
+            allPlatforms.add(Platform.newRandomPlatform(0,0,WORLD_SIZE, WORLD_SIZE));
+        }
     }
 
     @Override
@@ -55,11 +60,15 @@ public class TestScreen extends ScreenAdapter {
 
         // Update positions
         ball.update(delta);
-        ball.landedOnPlatform(platform);
+        for (Platform platform : allPlatforms) {
+            ball.landedOnPlatform(platform);
+        }
 
         // Render
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        platform.render(shapeRenderer);
+        for (Platform platform : allPlatforms) {
+            platform.render(shapeRenderer);
+        }
         ball.render(shapeRenderer);
         shapeRenderer.end();
     }

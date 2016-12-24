@@ -19,7 +19,7 @@ android {
     }
     defaultConfig {
         applicationId "com.hammerox.rollingbal"
-        minSdkVersion 8
+        minSdkVersion 16
         targetSdkVersion 25
     }
 }

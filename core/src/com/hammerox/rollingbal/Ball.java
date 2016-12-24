@@ -8,6 +8,9 @@ import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+
 import static com.hammerox.rollingbal.Constants.*;
 
 /**
@@ -156,11 +159,14 @@ public class Ball extends InputAdapter {
     }
 
     public boolean landedOnPlatform(Platform platform) {
+        DecimalFormat df = new DecimalFormat("#.####");
+        df.setRoundingMode(RoundingMode.FLOOR);
+
         float yBefore = lastPosition.y - BALL_RADIUS;
         float yAfter = position.y - BALL_RADIUS;
         float top = platform.top;
 
-        boolean wasOver = yBefore >= top;
+        boolean wasOver = Float.valueOf(df.format(yBefore)) >= Float.valueOf(df.format(top));
         boolean isUnder = yAfter < top;
         boolean isInside = position.x >= platform.position.x
                 && position.x <= platform.position.x + platform.size.x;
