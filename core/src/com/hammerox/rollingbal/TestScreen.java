@@ -10,7 +10,7 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.hammerox.rollingbal.Constants.WORLD_SIZE;
+import static com.hammerox.rollingbal.Constants.*;
 
 /**
  * Created by Mauricio on 22-Dec-16.
@@ -62,13 +62,22 @@ public class TestScreen extends ScreenAdapter {
         viewport.apply();
         shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
 
-        // Update positions
+        // UPDATE
+            // Update ball
         ball.update(delta);
+
+            // Update camera
+        viewport.getCamera().position.y =
+                (ball.getPosition().y > (0.5f - CAMERA_BALL_OFFSET) * WORLD_SIZE)
+                ? ball.getPosition().y + CAMERA_BALL_OFFSET * WORLD_SIZE
+                : WORLD_SIZE / 2;
+
+            // Ball-Platform collisions
         for (Platform platform : allPlatforms) {
             ball.landedOnPlatform(platform);
         }
 
-        // Render
+        // RENDER
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(Color.CYAN);
         shapeRenderer.rect(0,0,WORLD_SIZE, WORLD_SIZE);

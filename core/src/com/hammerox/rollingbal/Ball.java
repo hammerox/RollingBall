@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -12,6 +11,7 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
 import static com.hammerox.rollingbal.Constants.*;
+import static com.hammerox.rollingbal.Util.removeImprecision;
 
 /**
  * Created by Mauricio on 22-Dec-16.
@@ -166,7 +166,7 @@ public class Ball extends InputAdapter {
         float yAfter = position.y - BALL_RADIUS;
         float top = platform.top;
 
-        boolean wasOver = Float.valueOf(df.format(yBefore)) >= Float.valueOf(df.format(top));
+        boolean wasOver = removeImprecision(yBefore) >= removeImprecision(top);
         boolean isUnder = yAfter < top;
         boolean isInside = position.x >= platform.position.x
                 && position.x <= platform.position.x + platform.size.x;
@@ -180,4 +180,20 @@ public class Ball extends InputAdapter {
         return false;
     }
 
+
+    public Vector2 getLastPosition() {
+        return lastPosition;
+    }
+
+    public Vector2 getLastVelocity() {
+        return lastVelocity;
+    }
+
+    public Vector2 getPosition() {
+        return position;
+    }
+
+    public Vector2 getVelocity() {
+        return velocity;
+    }
 }

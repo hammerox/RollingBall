@@ -11,6 +11,7 @@ public class Constants {
     // World constants
     public final static float   WORLD_SIZE = 100.0f;
     public final static Vector2 WORLD_GRAVITY = new Vector2(0, -250.0f);
+    public final static float   CAMERA_BALL_OFFSET = 0.1f;
 
     // Ball constants
     public final static float   BALL_RADIUS = 3.0f;
