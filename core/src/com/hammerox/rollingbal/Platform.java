@@ -30,8 +30,8 @@ public class Platform {
 
     public static Platform newRandomPlatform(float x0, float y0, float x1, float y1) {
         Vector2 position = new Vector2();
-        position.x = MathUtils.random() * (x1 - x0);
-        position.y = MathUtils.random() * (y1 - y0);
+        position.x = MathUtils.random() * (x1 - x0) + x0;
+        position.y = MathUtils.random() * (y1 - y0) + y0;
         return new Platform(position);
     }
 }

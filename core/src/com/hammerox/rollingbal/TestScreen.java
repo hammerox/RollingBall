@@ -2,6 +2,7 @@ package com.hammerox.rollingbal;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
@@ -36,8 +37,11 @@ public class TestScreen extends ScreenAdapter {
         ball.init(WORLD_SIZE/2, WORLD_SIZE/2);
 
         allPlatforms = new LinkedList<Platform>();
+        float add = WORLD_SIZE / 5.0f;
+        float bottom = 0;
         for (int i = 0; i < 5; i++) {
-            allPlatforms.add(Platform.newRandomPlatform(0,0,WORLD_SIZE, WORLD_SIZE));
+            allPlatforms.add(Platform.newRandomPlatform(0, bottom, WORLD_SIZE, bottom + add));
+            bottom += add;
         }
     }
 
@@ -66,6 +70,8 @@ public class TestScreen extends ScreenAdapter {
 
         // Render
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(Color.CYAN);
+        shapeRenderer.rect(0,0,WORLD_SIZE, WORLD_SIZE);
         for (Platform platform : allPlatforms) {
             platform.render(shapeRenderer);
         }
