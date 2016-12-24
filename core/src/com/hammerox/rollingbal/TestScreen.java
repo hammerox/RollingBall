@@ -44,6 +44,7 @@ public class TestScreen extends ScreenAdapter {
 
     @Override
     public void render(float delta) {
+        // TODO - Uncomment delta to debug
         delta = 1.0f / 60.0f;
 
         Gdx.gl.glClearColor(0.5f, 0.5f, 1, 1);

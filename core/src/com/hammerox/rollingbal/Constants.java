@@ -19,7 +19,7 @@ public class Constants {
     public final static float   BALL_JUMP_SPEED = 150.0f;
     public final static float   BALL_JUMP_ERROR = 0.1f;
     public final static float   ACCELEROMETER_FACTOR = 3000.0f;
-    public final static float   BALL_BOUNCE_ABSORPTION = 0;
+    public final static float   BALL_BOUNCE_ABSORPTION = 0.8f;
 
     // Platform constants
     public final static Vector2 PLAT_SIZE_DEFAULT = new Vector2(15.0f, 3.0f);

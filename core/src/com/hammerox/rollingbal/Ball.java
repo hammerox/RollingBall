@@ -150,29 +150,26 @@ public class Ball extends InputAdapter {
     }
 
     public void land(float y) {
-        // TODO - BUG: When BALL_BOUNCE_ABSORPTION isn't 0, ball doesn't bounce on platforms
         velocity.y = - velocity.y * BALL_BOUNCE_ABSORPTION;
         position.y = y + BALL_RADIUS;
         isLanded = true;
     }
 
     public boolean landedOnPlatform(Platform platform) {
-        if (!isJumping) {
-            Vector2 ball1 = lastPosition.cpy().add(BALL_COLLISION_VECTOR);
-            Vector2 ball2 = position.cpy().add(BALL_COLLISION_VECTOR);
-            Vector2 plat1 = platform.position.cpy().add(0, platform.size.y);
-            Vector2 plat2 = platform.position.cpy().add(platform.size);
+        float yBefore = lastPosition.y - BALL_RADIUS;
+        float yAfter = position.y - BALL_RADIUS;
+        float top = platform.top;
 
-            boolean isTouching =
-                    Intersector.intersectSegments(ball1, ball2, plat1, plat2, null);
+        boolean wasOver = yBefore >= top;
+        boolean isUnder = yAfter < top;
+        boolean isInside = position.x >= platform.position.x
+                && position.x <= platform.position.x + platform.size.x;
 
-
-            // TODO - BUG: After landing on platform and falling, ball can jump on midair.
-            if (isTouching) {
-                land(plat1.y);
-                return true;
-            }
+        if (wasOver && isUnder && isInside) {
+            land(platform.top);
+            return true;
         }
+        // TODO - BUG: After landing on platform and falling, ball can jump on midair.
 
         return false;
     }
