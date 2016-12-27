@@ -1,7 +1,7 @@
 package com.hammerox.rollingbal;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -35,6 +35,17 @@ public class Obstacle {
         right.render(shapeRenderer);
     }
 
+    public static Obstacle newRandomObstacle(float height) {
+        Vector2 position = new Vector2();
+        float gapSize = MathUtils.random() * Constants.WORLD_SIZE / 3 + Constants.BALL_RADIUS * 2;
+        position.x = (Constants.WORLD_SIZE - gapSize) * MathUtils.random();
+        position.y = height;
+        return new Obstacle(position, gapSize);
+    }
+
+    /*
+    GETTERS AND SETTERS
+    */
 
     public Vector2 getGapPosition() {
         return gapPosition;

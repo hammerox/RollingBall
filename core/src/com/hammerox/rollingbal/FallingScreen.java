@@ -5,9 +5,11 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
+
+import java.util.LinkedList;
+import java.util.List;
 
 import static com.hammerox.rollingbal.Constants.*;
 
@@ -23,7 +25,7 @@ public class FallingScreen extends ScreenAdapter {
     private ShapeRenderer shapeRenderer;
 
     private Character character;
-    private Obstacle obstacle;
+    private List<Obstacle> allObstacles;
 
     @Override
     public void show() {
@@ -35,8 +37,11 @@ public class FallingScreen extends ScreenAdapter {
         character = new Character(viewport);
         character.init(WORLD_SIZE/2, WORLD_SIZE/2);
 
-        obstacle = new Obstacle(new Vector2(WORLD_SIZE/2, WORLD_SIZE/3), 15.0f);
+        allObstacles = new LinkedList<Obstacle>();
 
+        allObstacles.add(Obstacle.newRandomObstacle(1*OBSTACLE_DISTANCE));
+        allObstacles.add(Obstacle.newRandomObstacle(2*OBSTACLE_DISTANCE));
+        allObstacles.add(Obstacle.newRandomObstacle(3*OBSTACLE_DISTANCE));
     }
 
     @Override
@@ -67,16 +72,19 @@ public class FallingScreen extends ScreenAdapter {
                         : WORLD_SIZE / 2;
 
             // Player-Platform collisions
-        character.landedOnPlatform(obstacle.getLeft());
-        character.landedOnPlatform(obstacle.getRight());
-
+        for (Obstacle obstacle : allObstacles) {
+            character.landedOnPlatform(obstacle.getLeft());
+            character.landedOnPlatform(obstacle.getRight());
+        }
 
         // RENDER
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(Color.CYAN);
         shapeRenderer.rect(0,0,WORLD_SIZE, WORLD_SIZE);
 
-        obstacle.render(shapeRenderer);
+        for (Obstacle obstacle : allObstacles) {
+            obstacle.render(shapeRenderer);
+        }
 
         character.render(shapeRenderer);
 

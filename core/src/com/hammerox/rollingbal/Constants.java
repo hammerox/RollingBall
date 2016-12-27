@@ -24,4 +24,7 @@ public class Constants {
 
     // Platform constants
     public final static Vector2 PLAT_SIZE_DEFAULT = new Vector2(15.0f, 3.0f);
+
+    // Obstacle constants
+    public final static float   OBSTACLE_DISTANCE = WORLD_SIZE / 3;
 }
