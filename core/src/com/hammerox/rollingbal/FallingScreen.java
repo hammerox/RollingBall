@@ -34,6 +34,8 @@ public class FallingScreen extends ScreenAdapter {
     private float worldHeight;
     private float lastObstacleHeight;
 
+    private boolean isGameOver = false;
+
     @Override
     public void show() {
         Gdx.app.log(TAG, "show");
@@ -78,36 +80,43 @@ public class FallingScreen extends ScreenAdapter {
         viewport.apply();
         shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
 
-        // UPDATE
-            // Update player
-        character.update(delta);
+        if (!isGameOver) {
+            // UPDATE
+                // Update player
+            character.update(delta);
 
-            // Player-Platform collisions
-        for (Obstacle obstacle : allObstacles) {
-            character.landedOnPlatform(obstacle.getLeft());
-            character.landedOnPlatform(obstacle.getRight());
-        }
+                // Player-Platform collisions
+            for (Obstacle obstacle : allObstacles) {
+                character.landedOnPlatform(obstacle.getLeft());
+                character.landedOnPlatform(obstacle.getRight());
+            }
 
-            // Update camera
-        if (character.getPosition().y < cameraBottom + limitBottom) {
-            viewport.getCamera().position.y = character.getPosition().y + limitMiddle;
-            updateCameraConstants();
-        } else {
-            viewport.getCamera().position.y -= CAMERA_SPEED * delta;
-            cameraTop -= CAMERA_SPEED * delta;
-            cameraBottom -= CAMERA_SPEED * delta;
-        }
+                // Update camera
+            if (character.getPosition().y < cameraBottom + limitBottom) {
+                viewport.getCamera().position.y = character.getPosition().y + limitMiddle;
+                updateCameraConstants();
+            } else {
+                viewport.getCamera().position.y -= CAMERA_SPEED * delta;
+                cameraTop -= CAMERA_SPEED * delta;
+                cameraBottom -= CAMERA_SPEED * delta;
+            }
 
-            // Create new obstacles, if necessary
-        while (cameraBottom - WORLD_SIZE < lastObstacleHeight ) {
-            lastObstacleHeight -= OBSTACLE_DISTANCE;
-            allObstacles.add(Obstacle.newRandomObstacle(lastObstacleHeight));
-        }
+                // Create new obstacles, if necessary
+            while (cameraBottom - WORLD_SIZE < lastObstacleHeight) {
+                lastObstacleHeight -= OBSTACLE_DISTANCE;
+                allObstacles.add(Obstacle.newRandomObstacle(lastObstacleHeight));
+            }
 
-            // Remove obstacles, if necessary
-        float y = allObstacles.get(0).getGapPosition().y;
-        if (y > cameraTop) {
-            allObstacles.remove(0);
+                // Remove obstacles, if necessary
+            float y = allObstacles.get(0).getGapPosition().y;
+            if (y > cameraTop) {
+                allObstacles.remove(0);
+            }
+
+                // End game if player lose
+            if (character.getPosition().y - BALL_RADIUS > cameraTop) {
+                isGameOver = true;
+            }
         }
 
         // RENDER
@@ -122,6 +131,7 @@ public class FallingScreen extends ScreenAdapter {
         character.render(shapeRenderer);
 
         shapeRenderer.end();
+
     }
 
     @Override
