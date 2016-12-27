@@ -17,11 +17,19 @@ public class Platform {
     public Vector2 size;
     public float top;
 
+
     public Platform(Vector2 position) {
         this.position = position;
         this.size = PLAT_SIZE_DEFAULT;
         top = position.y + size.y;
     }
+
+    public Platform(Vector2 position, Vector2 size) {
+        this.position = position;
+        this.size = size;
+        top = position.y + size.y;
+    }
+
 
     public void render(ShapeRenderer shapeRenderer) {
         shapeRenderer.setColor(Color.BLUE);

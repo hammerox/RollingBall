@@ -5,10 +5,9 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
-import java.util.LinkedList;
-import java.util.List;
 
 import static com.hammerox.rollingbal.Constants.*;
 
@@ -24,7 +23,7 @@ public class FallingScreen extends ScreenAdapter {
     private ShapeRenderer shapeRenderer;
 
     private Character character;
-    private List<Platform> allPlatforms;
+    private Obstacle obstacle;
 
     @Override
     public void show() {
@@ -36,13 +35,8 @@ public class FallingScreen extends ScreenAdapter {
         character = new Character(viewport);
         character.init(WORLD_SIZE/2, WORLD_SIZE/2);
 
-        allPlatforms = new LinkedList<Platform>();
-        float add = WORLD_SIZE / 5.0f;
-        float bottom = 0;
-        for (int i = 0; i < 5; i++) {
-            allPlatforms.add(Platform.newRandomPlatform(0, bottom, WORLD_SIZE, bottom + add));
-            bottom += add;
-        }
+        obstacle = new Obstacle(new Vector2(WORLD_SIZE/2, WORLD_SIZE/3), 15.0f);
+
     }
 
     @Override
@@ -73,18 +67,19 @@ public class FallingScreen extends ScreenAdapter {
                         : WORLD_SIZE / 2;
 
             // Player-Platform collisions
-        for (Platform platform : allPlatforms) {
-            character.landedOnPlatform(platform);
-        }
+        character.landedOnPlatform(obstacle.getLeft());
+        character.landedOnPlatform(obstacle.getRight());
+
 
         // RENDER
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(Color.CYAN);
         shapeRenderer.rect(0,0,WORLD_SIZE, WORLD_SIZE);
-        for (Platform platform : allPlatforms) {
-            platform.render(shapeRenderer);
-        }
+
+        obstacle.render(shapeRenderer);
+
         character.render(shapeRenderer);
+
         shapeRenderer.end();
     }
 
