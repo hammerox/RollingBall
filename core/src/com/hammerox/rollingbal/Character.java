@@ -77,11 +77,6 @@ public class Character extends InputAdapter {
         } else if (position.x + BALL_RADIUS > WORLD_SIZE) {
             position.x = WORLD_SIZE - BALL_RADIUS;
         }
-
-            // With ground
-        if (position.y - BALL_RADIUS < 0) {
-            land(0);
-        }
     }
 
 

@@ -26,6 +26,9 @@ public class FallingScreen extends ScreenAdapter {
 
     private Character character;
     private List<Obstacle> allObstacles;
+    private float cameraTop;
+    private float cameraBottom;
+    private float lastObstacleHeight;
 
     @Override
     public void show() {
@@ -39,16 +42,20 @@ public class FallingScreen extends ScreenAdapter {
 
         allObstacles = new LinkedList<Obstacle>();
 
-        allObstacles.add(Obstacle.newRandomObstacle(0*OBSTACLE_DISTANCE));
-        allObstacles.add(Obstacle.newRandomObstacle(1*OBSTACLE_DISTANCE));
-        allObstacles.add(Obstacle.newRandomObstacle(2*OBSTACLE_DISTANCE));
         allObstacles.add(Obstacle.newRandomObstacle(3*OBSTACLE_DISTANCE));
+        allObstacles.add(Obstacle.newRandomObstacle(2*OBSTACLE_DISTANCE));
+        allObstacles.add(Obstacle.newRandomObstacle(1*OBSTACLE_DISTANCE));
+        allObstacles.add(Obstacle.newRandomObstacle(0*OBSTACLE_DISTANCE));
+
+        lastObstacleHeight = 0;
     }
 
     @Override
     public void resize(int width, int height) {
         Gdx.app.log(TAG, "resize");
         viewport.update(width, height, true);
+        cameraTop = viewport.getCamera().position.y + viewport.getWorldHeight() / 2;
+        cameraBottom = viewport.getCamera().position.y - viewport.getWorldHeight() / 2;
     }
 
     @Override
@@ -66,14 +73,28 @@ public class FallingScreen extends ScreenAdapter {
             // Update player
         character.update(delta);
 
-            // Update camera
-        viewport.getCamera().position.x = WORLD_SIZE/2;
-        viewport.getCamera().position.y -= CAMERA_SPEED * delta;
-
             // Player-Platform collisions
         for (Obstacle obstacle : allObstacles) {
             character.landedOnPlatform(obstacle.getLeft());
             character.landedOnPlatform(obstacle.getRight());
+        }
+
+            // Update camera
+        viewport.getCamera().position.x = WORLD_SIZE/2;
+        viewport.getCamera().position.y -= CAMERA_SPEED * delta;
+        cameraTop -= CAMERA_SPEED * delta;
+        cameraBottom -= CAMERA_SPEED * delta;
+
+            // Create new obstacles, if necessary
+        while (cameraBottom - WORLD_SIZE < lastObstacleHeight ) {
+            lastObstacleHeight -= OBSTACLE_DISTANCE;
+            allObstacles.add(Obstacle.newRandomObstacle(lastObstacleHeight));
+        }
+
+            // Remove obstacles, if necessary
+        float y = allObstacles.get(0).getGapPosition().y;
+        if (y > cameraTop) {
+            allObstacles.remove(0);
         }
 
         // RENDER
