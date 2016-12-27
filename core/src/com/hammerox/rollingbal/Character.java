@@ -91,10 +91,6 @@ public class Character extends InputAdapter {
         lastVelocity.set(velocity);
 
         // RENDER
-        // Todo - ERASE THIS: View jump zone
-        shapeRenderer.setColor(0,0,1,1);
-        shapeRenderer.rect(0,0,viewport.getScreenWidth(), BALL_JUMP_ERROR);
-
         shapeRenderer.setColor(0.5f, 0, 0, 1);
         shapeRenderer.circle(position.x, position.y, BALL_RADIUS, 50);
     }

@@ -22,6 +22,9 @@ public class Constants {
     public final static float   ACCELEROMETER_FACTOR = 3000.0f;
     public final static float   BALL_BOUNCE_ABSORPTION = 0f;
 
+    // Screen chasing constants
+    public final static float   CAMERA_SPEED = 20.0f;
+
     // Platform constants
     public final static Vector2 PLAT_SIZE_DEFAULT = new Vector2(15.0f, 3.0f);
 

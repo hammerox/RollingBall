@@ -39,6 +39,7 @@ public class FallingScreen extends ScreenAdapter {
 
         allObstacles = new LinkedList<Obstacle>();
 
+        allObstacles.add(Obstacle.newRandomObstacle(0*OBSTACLE_DISTANCE));
         allObstacles.add(Obstacle.newRandomObstacle(1*OBSTACLE_DISTANCE));
         allObstacles.add(Obstacle.newRandomObstacle(2*OBSTACLE_DISTANCE));
         allObstacles.add(Obstacle.newRandomObstacle(3*OBSTACLE_DISTANCE));
@@ -67,10 +68,7 @@ public class FallingScreen extends ScreenAdapter {
 
             // Update camera
         viewport.getCamera().position.x = WORLD_SIZE/2;
-        viewport.getCamera().position.y =
-                (character.getPosition().y > (0.5f - CAMERA_BALL_OFFSET) * WORLD_SIZE)
-                        ? character.getPosition().y + CAMERA_BALL_OFFSET * WORLD_SIZE
-                        : WORLD_SIZE / 2;
+        viewport.getCamera().position.y -= CAMERA_SPEED * delta;
 
             // Player-Platform collisions
         for (Obstacle obstacle : allObstacles) {
