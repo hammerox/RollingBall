@@ -26,8 +26,12 @@ public class FallingScreen extends ScreenAdapter {
 
     private Character character;
     private List<Obstacle> allObstacles;
+
     private float cameraTop;
     private float cameraBottom;
+    private float limitBottom;
+    private float limitMiddle;
+    private float worldHeight;
     private float lastObstacleHeight;
 
     @Override
@@ -54,8 +58,13 @@ public class FallingScreen extends ScreenAdapter {
     public void resize(int width, int height) {
         Gdx.app.log(TAG, "resize");
         viewport.update(width, height, true);
-        cameraTop = viewport.getCamera().position.y + viewport.getWorldHeight() / 2;
-        cameraBottom = viewport.getCamera().position.y - viewport.getWorldHeight() / 2;
+
+        viewport.getCamera().position.x = WORLD_SIZE/2;
+        updateCameraConstants();
+
+        worldHeight = viewport.getWorldHeight();
+        limitBottom = CAMERA_LIMIT_RATIO * worldHeight;
+        limitMiddle = (0.5f - CAMERA_LIMIT_RATIO) * worldHeight ;
     }
 
     @Override
@@ -80,10 +89,14 @@ public class FallingScreen extends ScreenAdapter {
         }
 
             // Update camera
-        viewport.getCamera().position.x = WORLD_SIZE/2;
-        viewport.getCamera().position.y -= CAMERA_SPEED * delta;
-        cameraTop -= CAMERA_SPEED * delta;
-        cameraBottom -= CAMERA_SPEED * delta;
+        if (character.getPosition().y < cameraBottom + limitBottom) {
+            viewport.getCamera().position.y = character.getPosition().y + limitMiddle;
+            updateCameraConstants();
+        } else {
+            viewport.getCamera().position.y -= CAMERA_SPEED * delta;
+            cameraTop -= CAMERA_SPEED * delta;
+            cameraBottom -= CAMERA_SPEED * delta;
+        }
 
             // Create new obstacles, if necessary
         while (cameraBottom - WORLD_SIZE < lastObstacleHeight ) {
@@ -115,5 +128,10 @@ public class FallingScreen extends ScreenAdapter {
     public void dispose() {
         Gdx.app.log(TAG, "dispose");
         shapeRenderer.dispose();
+    }
+
+    private void updateCameraConstants() {
+        cameraTop = viewport.getCamera().position.y + worldHeight / 2;
+        cameraBottom = viewport.getCamera().position.y - worldHeight / 2;
     }
 }
