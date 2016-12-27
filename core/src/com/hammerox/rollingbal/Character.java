@@ -74,8 +74,8 @@ public class Character extends InputAdapter {
             // With walls
         if (position.x - BALL_RADIUS < 0) {
             position.x = BALL_RADIUS;
-        } else if (position.x + BALL_RADIUS > viewport.getWorldWidth()) {
-            position.x = viewport.getWorldWidth() - BALL_RADIUS;
+        } else if (position.x + BALL_RADIUS > WORLD_SIZE) {
+            position.x = WORLD_SIZE - BALL_RADIUS;
         }
 
             // With ground

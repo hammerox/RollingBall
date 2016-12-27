@@ -66,6 +66,7 @@ public class FallingScreen extends ScreenAdapter {
         character.update(delta);
 
             // Update camera
+        viewport.getCamera().position.x = WORLD_SIZE/2;
         viewport.getCamera().position.y =
                 (character.getPosition().y > (0.5f - CAMERA_BALL_OFFSET) * WORLD_SIZE)
                         ? character.getPosition().y + CAMERA_BALL_OFFSET * WORLD_SIZE
