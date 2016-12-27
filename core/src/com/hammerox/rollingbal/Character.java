@@ -17,7 +17,7 @@ import static com.hammerox.rollingbal.Util.removeImprecision;
  * Created by Mauricio on 22-Dec-16.
  */
 
-public class Ball extends InputAdapter {
+public class Character extends InputAdapter {
 
     private Viewport viewport;
 
@@ -31,7 +31,7 @@ public class Ball extends InputAdapter {
     private boolean isJumping = false;
 
 
-    public Ball(Viewport viewport) {
+    public Character(Viewport viewport) {
         this.viewport = viewport;
 
         Gdx.input.setInputProcessor(this);

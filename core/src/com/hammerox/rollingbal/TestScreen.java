@@ -23,7 +23,7 @@ public class TestScreen extends ScreenAdapter {
     private ExtendViewport viewport;
     private ShapeRenderer shapeRenderer;
 
-    private Ball ball;
+    private Character character;
     private List<Platform> allPlatforms;
 
     @Override
@@ -33,8 +33,8 @@ public class TestScreen extends ScreenAdapter {
         shapeRenderer = new ShapeRenderer();
         viewport = new ExtendViewport(WORLD_SIZE, WORLD_SIZE);
 
-        ball = new Ball(viewport);
-        ball.init(WORLD_SIZE/2, WORLD_SIZE/2);
+        character = new Character(viewport);
+        character.init(WORLD_SIZE/2, WORLD_SIZE/2);
 
         allPlatforms = new LinkedList<Platform>();
         float add = WORLD_SIZE / 5.0f;
@@ -64,17 +64,17 @@ public class TestScreen extends ScreenAdapter {
 
         // UPDATE
             // Update ball
-        ball.update(delta);
+        character.update(delta);
 
             // Update camera
         viewport.getCamera().position.y =
-                (ball.getPosition().y > (0.5f - CAMERA_BALL_OFFSET) * WORLD_SIZE)
-                ? ball.getPosition().y + CAMERA_BALL_OFFSET * WORLD_SIZE
+                (character.getPosition().y > (0.5f - CAMERA_BALL_OFFSET) * WORLD_SIZE)
+                ? character.getPosition().y + CAMERA_BALL_OFFSET * WORLD_SIZE
                 : WORLD_SIZE / 2;
 
             // Ball-Platform collisions
         for (Platform platform : allPlatforms) {
-            ball.landedOnPlatform(platform);
+            character.landedOnPlatform(platform);
         }
 
         // RENDER
@@ -84,7 +84,7 @@ public class TestScreen extends ScreenAdapter {
         for (Platform platform : allPlatforms) {
             platform.render(shapeRenderer);
         }
-        ball.render(shapeRenderer);
+        character.render(shapeRenderer);
         shapeRenderer.end();
     }
 
