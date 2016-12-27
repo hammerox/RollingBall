@@ -95,11 +95,11 @@ public class FallingScreen extends ScreenAdapter {
             if (character.getPosition().y < cameraBottom + limitBottom) {
                 viewport.getCamera().position.y = character.getPosition().y + limitMiddle;
                 updateCameraConstants();
-            } else {
-                viewport.getCamera().position.y -= CAMERA_SPEED * delta;
-                cameraTop -= CAMERA_SPEED * delta;
-                cameraBottom -= CAMERA_SPEED * delta;
             }
+            
+            viewport.getCamera().position.y -= CAMERA_SPEED * delta;
+            cameraTop -= CAMERA_SPEED * delta;
+            cameraBottom -= CAMERA_SPEED * delta;
 
                 // Create new obstacles, if necessary
             while (cameraBottom - WORLD_SIZE < lastObstacleHeight) {

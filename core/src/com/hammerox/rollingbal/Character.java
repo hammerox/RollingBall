@@ -50,7 +50,9 @@ public class Character extends InputAdapter {
     public void update(float delta) {
         // INPUT RESPONSE
             // Accelerometer
-        float accelerometer = Gdx.input.getAccelerometerY();
+        float accelerometer;
+
+        accelerometer = -Gdx.input.getAccelerometerX();
         velocity.x = accelerometer * delta * ACCELEROMETER_FACTOR;
 
             // A
