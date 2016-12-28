@@ -7,8 +7,8 @@ import com.hammerox.rollingbal.RollingBallGame;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-        config.height = 1000;
-        config.width = 500;
+        config.height = 650;
+        config.width = 400;
 		new LwjglApplication(new RollingBallGame(), config);
 	}
 }

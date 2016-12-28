@@ -4,6 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
@@ -23,8 +27,12 @@ public class FallingScreen extends ScreenAdapter {
 
     private ExtendViewport viewport;
     private ShapeRenderer shapeRenderer;
+    private SpriteBatch batch;
+    private BitmapFont font;
+    private GlyphLayout textButton;
 
     private Character character;
+    private float characterY;
     private List<Obstacle> allObstacles;
 
     private float cameraTop;
@@ -35,22 +43,23 @@ public class FallingScreen extends ScreenAdapter {
     private float lastObstacleHeight;
 
     private boolean isGameOver = false;
+    private int score = 0;
 
     @Override
     public void show() {
         Gdx.app.log(TAG, "show");
 
         shapeRenderer = new ShapeRenderer();
+        batch = new SpriteBatch();
+        font = Util.generateFont(FONT_ROBOTO_PATH, SCORE_FONT_SIZE);
+        textButton = new GlyphLayout();
+
         viewport = new ExtendViewport(WORLD_SIZE, WORLD_SIZE);
 
         character = new Character(viewport);
         character.init(WORLD_SIZE/2, WORLD_SIZE/2);
 
         allObstacles = new LinkedList<Obstacle>();
-
-        allObstacles.add(Obstacle.newRandomObstacle(3*OBSTACLE_DISTANCE));
-        allObstacles.add(Obstacle.newRandomObstacle(2*OBSTACLE_DISTANCE));
-        allObstacles.add(Obstacle.newRandomObstacle(1*OBSTACLE_DISTANCE));
         allObstacles.add(Obstacle.newRandomObstacle(0*OBSTACLE_DISTANCE));
 
         lastObstacleHeight = 0;
@@ -90,11 +99,15 @@ public class FallingScreen extends ScreenAdapter {
                 character.landedOnPlatform(obstacle.getLeft());
                 character.landedOnPlatform(obstacle.getRight());
             }
+            characterY = character.getPosition().y;
 
                 // Update camera
-            if (character.getPosition().y < cameraBottom + limitBottom) {
-                viewport.getCamera().position.y = character.getPosition().y + limitMiddle;
+            if (characterY < cameraBottom + limitBottom) {
+                viewport.getCamera().position.y = characterY + limitMiddle;
                 updateCameraConstants();
+                font.setColor(Color.RED);
+            } else {
+                font.setColor(Color.BLACK);
             }
             
             viewport.getCamera().position.y -= CAMERA_SPEED * delta;
@@ -113,13 +126,17 @@ public class FallingScreen extends ScreenAdapter {
                 allObstacles.remove(0);
             }
 
+                // Update score if better
+            if (-characterY > score) score = - Math.round(characterY);
+
                 // End game if player lose
-            if (character.getPosition().y - BALL_RADIUS > cameraTop) {
+            if (characterY - BALL_RADIUS > cameraTop) {
                 isGameOver = true;
             }
         }
 
         // RENDER
+            // Shape render
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(Color.CYAN);
         shapeRenderer.rect(0,0,WORLD_SIZE, WORLD_SIZE);
@@ -132,12 +149,22 @@ public class FallingScreen extends ScreenAdapter {
 
         shapeRenderer.end();
 
+            // Sprite render
+        batch.begin();
+        textButton.setText(font, String.valueOf(score));
+        float textX = (viewport.getScreenWidth() - textButton.width) / 2;
+        float textY = textButton.height + viewport.getScreenHeight() / 12;
+        font.draw(batch, textButton, textX, textY);
+        batch.end();
+
     }
 
     @Override
     public void dispose() {
         Gdx.app.log(TAG, "dispose");
         shapeRenderer.dispose();
+        batch.dispose();
+        font.dispose();
     }
 
     private void updateCameraConstants() {
