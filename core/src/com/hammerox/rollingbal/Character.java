@@ -99,26 +99,26 @@ public class Character extends InputAdapter {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        if (isFalling) {
-            jump();
-        }
+//        if (isFalling) {
+//            jump();
+//        }
         return false;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        stopJump();
+//        stopJump();
         return false;
     }
 
 
     @Override
     public boolean keyDown(int keycode) {
-        switch (keycode) {
-            case Input.Keys.SPACE:
-                jump();
-                break;
-        }
+//        switch (keycode) {
+//            case Input.Keys.SPACE:
+//                jump();
+//                break;
+//        }
         return false;
     }
 
@@ -129,9 +129,9 @@ public class Character extends InputAdapter {
             case Input.Keys.D:
                 velocity.x = 0;
                 break;
-            case Input.Keys.SPACE:
-                stopJump();
-                break;
+//            case Input.Keys.SPACE:
+//                stopJump();
+//                break;
         }
         return false;
     }
