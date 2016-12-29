@@ -213,8 +213,7 @@ public class FallingScreen extends ScreenAdapter {
     private void resetGame() {
         allObstacles.clear();
 
-        character.init(WORLD_SIZE/2, WORLD_SIZE/2);
-        allObstacles.add(Obstacle.newRandomObstacle(0*OBSTACLE_DISTANCE));
+        character.init(WORLD_SIZE/2, 0);
 
         viewport.getCamera().position.y = viewport.getWorldHeight() / 2;
         updateCameraConstants();
