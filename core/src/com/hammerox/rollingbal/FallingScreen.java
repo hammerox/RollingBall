@@ -36,12 +36,12 @@ public class FallingScreen extends ScreenAdapter {
     private float characterY;
     private List<Obstacle> allObstacles;
 
-    private float cameraTop;
-    private float cameraBottom;
+    private float cameraTopPosition;
+    private float cameraBottomPosition;
     private float limitToBottomSize;
     private float limitToMiddleSize;
     private float worldHeight;
-    private float lastObstacleHeight;
+    private float lastObstaclePosition;
 
     private boolean hasGameStarted = false;
     private boolean isGameOver = false;
@@ -65,7 +65,7 @@ public class FallingScreen extends ScreenAdapter {
         allObstacles = new LinkedList<Obstacle>();
         allObstacles.add(Obstacle.newRandomObstacle(0*OBSTACLE_DISTANCE));
 
-        lastObstacleHeight = 0;
+        lastObstaclePosition = 0;
     }
 
     @Override
@@ -81,6 +81,62 @@ public class FallingScreen extends ScreenAdapter {
         limitToMiddleSize = (0.5f - CAMERA_LIMIT_RATIO) * worldHeight ;
     }
 
+    public void update(float delta) {
+        if (!hasGameStarted) {
+            if (Gdx.input.justTouched() || Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+                // Start game on first touch
+                startGame();
+            }
+        }
+
+        if (!isGameOver) {
+            // Update player
+            character.update(delta);
+
+            // Player-Platform collisions
+            for (Obstacle obstacle : allObstacles) {
+                character.landedOnPlatform(obstacle.getLeft());
+                character.landedOnPlatform(obstacle.getRight());
+            }
+            characterY = character.getPosition().y;
+
+            // Update camera
+            boolean isCharacterBelowLimit = characterY < cameraBottomPosition + limitToBottomSize;
+            if (isCharacterBelowLimit) {
+                followCharacter();
+                fontScore.setColor(Color.RED);
+            } else {
+                fontScore.setColor(Color.BLACK);
+            }
+
+            if (hasGameStarted)
+                moveCamera(delta);
+
+            // Create new obstacles, if necessary
+            boolean needMoreObstacle = cameraBottomPosition - WORLD_SIZE < lastObstaclePosition;
+            while (needMoreObstacle) {
+                lastObstaclePosition -= OBSTACLE_DISTANCE;
+                allObstacles.add(Obstacle.newRandomObstacle(lastObstaclePosition));
+            }
+
+            // Remove obstacle from top, if necessary
+            boolean isObstacleAboveScreen = allObstacles.get(0).getGapPosition().y > cameraTopPosition;
+            if (isObstacleAboveScreen)
+                allObstacles.remove(0);
+
+
+            // Update score if better
+            boolean isToUpdateScore = score < -characterY;
+            if (isToUpdateScore)
+                score = - Math.round(characterY);
+
+            // End game if player lose
+            boolean isCharacterAboveScreen = characterY - BALL_RADIUS > cameraTopPosition;
+            if (isCharacterAboveScreen)
+                isGameOver = true;
+        }
+    }
+
     @Override
     public void render(float delta) {
         // TODO - Uncomment delta to debug
@@ -88,104 +144,37 @@ public class FallingScreen extends ScreenAdapter {
 
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
         viewport.apply();
         shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
 
-        // Ready to start game
-        if (!hasGameStarted) {
-            if (Gdx.input.justTouched() || Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-                startGame();
-            }
-        }
+        // UPDATE
+        update(delta);
 
-        if (!isGameOver) {
-            // UPDATE
-                // Update player
-            character.update(delta);
-
-                // Player-Platform collisions
-            for (Obstacle obstacle : allObstacles) {
-                character.landedOnPlatform(obstacle.getLeft());
-                character.landedOnPlatform(obstacle.getRight());
-            }
-            characterY = character.getPosition().y;
-
-                // Update camera
-            if (characterY < cameraBottom + limitToBottomSize) {
-                viewport.getCamera().position.y = characterY + limitToMiddleSize;
-                updateCameraConstants();
-                fontScore.setColor(Color.RED);
-            } else {
-                fontScore.setColor(Color.BLACK);
-            }
-
-            if (hasGameStarted) {
-                viewport.getCamera().position.y -= CAMERA_SPEED * delta;
-                cameraTop -= CAMERA_SPEED * delta;
-                cameraBottom -= CAMERA_SPEED * delta;
-            }
-
-                // Create new obstacles, if necessary
-            while (cameraBottom - WORLD_SIZE < lastObstacleHeight) {
-                lastObstacleHeight -= OBSTACLE_DISTANCE;
-                allObstacles.add(Obstacle.newRandomObstacle(lastObstacleHeight));
-            }
-
-                // Remove obstacles, if necessary
-            float y = allObstacles.get(0).getGapPosition().y;
-            if (y > cameraTop) {
-                allObstacles.remove(0);
-            }
-
-                // Update score if better
-            if (-characterY > score) score = - Math.round(characterY);
-
-                // End game if player lose
-            if (characterY - BALL_RADIUS > cameraTop) {
-                isGameOver = true;
-            }
-        }
-
-        // RENDER
-            // Shape render
+        // SHAPE RENDER
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
+            // Render obstacles
         for (Obstacle obstacle : allObstacles) {
             obstacle.render(shapeRenderer);
         }
 
+            // Render character
         character.render(shapeRenderer);
 
         shapeRenderer.end();
 
-            // Sprite render
+        // SPRITE RENDER
         batch.begin();
             // Start message
         if (!hasGameStarted) {
-            fontSpeech.setColor(Color.BLACK);
-            textButton.setText(fontSpeech, "Tap to start");
-            float textX = (viewport.getScreenWidth() - textButton.width) / 2;
-            float textY = (viewport.getScreenHeight() + textButton.height) / 2;
-            fontSpeech.draw(batch, textButton, textX, textY);
+            showStartMessage();
         }
 
             // Show score or game-over message
         if (isGameOver) {
-            textButton.setText(fontSpeech, String.valueOf(score));
-            float textX = (viewport.getScreenWidth() - textButton.width) / 2;
-            float textY = viewport.getScreenHeight() / 2 + textButton.height;
-            fontSpeech.draw(batch, textButton, textX, textY);
-
-            textButton.setText(fontSpeech, "AWESOME!");
-            textX = (viewport.getScreenWidth() - textButton.width) / 2;
-            textY = viewport.getScreenHeight() / 2 - textButton.height;
-            fontSpeech.draw(batch, textButton, textX, textY);
+            showGameOverMessage();
         } else {
-            textButton.setText(fontScore, String.valueOf(score));
-            float textX = (viewport.getScreenWidth() - textButton.width) / 2;
-            float textY = textButton.height + viewport.getScreenHeight() / 12;
-            fontScore.draw(batch, textButton, textX, textY);
+            showScore();
         }
 
         batch.end();
@@ -200,13 +189,51 @@ public class FallingScreen extends ScreenAdapter {
         fontScore.dispose();
     }
 
+    private void moveCamera(float delta) {
+        viewport.getCamera().position.y -= CAMERA_SPEED * delta;
+        cameraTopPosition -= CAMERA_SPEED * delta;
+        cameraBottomPosition -= CAMERA_SPEED * delta;
+    }
+
+    private void followCharacter() {
+        viewport.getCamera().position.y = characterY + limitToMiddleSize;
+        updateCameraConstants();
+    }
+
     private void updateCameraConstants() {
-        cameraTop = viewport.getCamera().position.y + worldHeight / 2;
-        cameraBottom = viewport.getCamera().position.y - worldHeight / 2;
+        cameraTopPosition = viewport.getCamera().position.y + worldHeight / 2;
+        cameraBottomPosition = viewport.getCamera().position.y - worldHeight / 2;
     }
 
     private void startGame() {
         character.setFalling(true);
         hasGameStarted = true;
+    }
+
+    private void showStartMessage() {
+        fontSpeech.setColor(Color.BLACK);
+        textButton.setText(fontSpeech, "Tap to start");
+        float textX = (viewport.getScreenWidth() - textButton.width) / 2;
+        float textY = (viewport.getScreenHeight() + textButton.height) / 2;
+        fontSpeech.draw(batch, textButton, textX, textY);
+    }
+
+    private void showGameOverMessage() {
+        textButton.setText(fontSpeech, String.valueOf(score));
+        float textX = (viewport.getScreenWidth() - textButton.width) / 2;
+        float textY = viewport.getScreenHeight() / 2 + textButton.height;
+        fontSpeech.draw(batch, textButton, textX, textY);
+
+        textButton.setText(fontSpeech, "AWESOME!");
+        textX = (viewport.getScreenWidth() - textButton.width) / 2;
+        textY = viewport.getScreenHeight() / 2 - textButton.height;
+        fontSpeech.draw(batch, textButton, textX, textY);
+    }
+
+    private void showScore() {
+        textButton.setText(fontScore, String.valueOf(score));
+        float textX = (viewport.getScreenWidth() - textButton.width) / 2;
+        float textY = textButton.height + viewport.getScreenHeight() / 12;
+        fontScore.draw(batch, textButton, textX, textY);
     }
 }
