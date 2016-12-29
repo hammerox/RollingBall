@@ -113,8 +113,7 @@ public class FallingScreen extends ScreenAdapter {
                 moveCamera(delta);
 
             // Create new obstacles, if necessary
-            boolean needMoreObstacle = cameraBottomPosition - WORLD_SIZE < lastObstaclePosition;
-            while (needMoreObstacle) {
+            while (cameraBottomPosition - WORLD_SIZE < lastObstaclePosition) {
                 lastObstaclePosition -= OBSTACLE_DISTANCE;
                 allObstacles.add(Obstacle.newRandomObstacle(lastObstaclePosition));
             }
