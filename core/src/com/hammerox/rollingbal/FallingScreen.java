@@ -138,8 +138,6 @@ public class FallingScreen extends ScreenAdapter {
         // RENDER
             // Shape render
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(Color.CYAN);
-        shapeRenderer.rect(0,0,WORLD_SIZE, WORLD_SIZE);
 
         for (Obstacle obstacle : allObstacles) {
             obstacle.render(shapeRenderer);
