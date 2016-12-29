@@ -45,7 +45,7 @@ public class FallingScreen extends ScreenAdapter {
 
     private boolean hasGameStarted = false;
     private boolean isGameOver = false;
-    private int score = 0;
+    private int score;
 
     @Override
     public void show() {
@@ -60,12 +60,9 @@ public class FallingScreen extends ScreenAdapter {
         viewport = new ExtendViewport(WORLD_SIZE, WORLD_SIZE);
 
         character = new Character(viewport);
-        character.init(WORLD_SIZE/2, WORLD_SIZE/2);
-
         allObstacles = new LinkedList<Obstacle>();
-        allObstacles.add(Obstacle.newRandomObstacle(0*OBSTACLE_DISTANCE));
 
-        lastObstaclePosition = 0;
+        resetGame();
     }
 
     @Override
@@ -89,7 +86,12 @@ public class FallingScreen extends ScreenAdapter {
             }
         }
 
-        if (!isGameOver) {
+        if (isGameOver) {
+            if (Gdx.input.justTouched() || Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+                // Restart game on touch
+                resetGame();
+            }
+        } else {
             // Update player
             character.update(delta);
 
@@ -177,7 +179,6 @@ public class FallingScreen extends ScreenAdapter {
         }
 
         batch.end();
-
     }
 
     @Override
@@ -207,6 +208,20 @@ public class FallingScreen extends ScreenAdapter {
     private void startGame() {
         character.setFalling(true);
         hasGameStarted = true;
+    }
+
+    private void resetGame() {
+        allObstacles.clear();
+
+        character.init(WORLD_SIZE/2, WORLD_SIZE/2);
+        allObstacles.add(Obstacle.newRandomObstacle(0*OBSTACLE_DISTANCE));
+
+        viewport.getCamera().position.y = viewport.getWorldHeight() / 2;
+        updateCameraConstants();
+
+        score = 0;
+        lastObstaclePosition = 0;
+        isGameOver = false;
     }
 
     private void showStartMessage() {
