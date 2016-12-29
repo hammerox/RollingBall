@@ -16,14 +16,14 @@ public class Constants {
     // Ball constants
     public final static float   BALL_RADIUS = 3.0f;
     public final static Vector2 BALL_COLLISION_VECTOR = new Vector2(0, - BALL_RADIUS);
-    public final static float   BALL_INPUT_VELOCITY = 50.0f;
+    public final static float   BALL_INPUT_VELOCITY = 100.0f;
     public final static float   BALL_JUMP_SPEED = 150.0f;
     public final static float   BALL_JUMP_ERROR = 0.1f;
     public final static float   ACCELEROMETER_FACTOR = 3000.0f;
     public final static float   BALL_BOUNCE_ABSORPTION = 0f;    // Between 0 and 1
 
     // Screen chasing constants
-    public final static float   CAMERA_SPEED = 40.0f;
+    public final static float   CAMERA_SPEED = 80.0f;      // Original is 40. 80 is ok
     public final static float   CAMERA_LIMIT_RATIO = 0.3f;    // Between 0 and 0.5
 
     // Platform constants

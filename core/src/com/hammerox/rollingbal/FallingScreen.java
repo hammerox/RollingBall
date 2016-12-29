@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -37,8 +36,8 @@ public class FallingScreen extends ScreenAdapter {
 
     private float cameraTop;
     private float cameraBottom;
-    private float limitBottom;
-    private float limitMiddle;
+    private float limitToBottomSize;
+    private float limitToMiddleSize;
     private float worldHeight;
     private float lastObstacleHeight;
 
@@ -74,8 +73,8 @@ public class FallingScreen extends ScreenAdapter {
         updateCameraConstants();
 
         worldHeight = viewport.getWorldHeight();
-        limitBottom = CAMERA_LIMIT_RATIO * worldHeight;
-        limitMiddle = (0.5f - CAMERA_LIMIT_RATIO) * worldHeight ;
+        limitToBottomSize = CAMERA_LIMIT_RATIO * worldHeight;
+        limitToMiddleSize = (0.5f - CAMERA_LIMIT_RATIO) * worldHeight ;
     }
 
     @Override
@@ -102,8 +101,8 @@ public class FallingScreen extends ScreenAdapter {
             characterY = character.getPosition().y;
 
                 // Update camera
-            if (characterY < cameraBottom + limitBottom) {
-                viewport.getCamera().position.y = characterY + limitMiddle;
+            if (characterY < cameraBottom + limitToBottomSize) {
+                viewport.getCamera().position.y = characterY + limitToMiddleSize;
                 updateCameraConstants();
                 font.setColor(Color.RED);
             } else {
