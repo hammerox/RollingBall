@@ -35,4 +35,5 @@ public class Constants {
     // Font constants
     public final static String  FONT_ROBOTO_PATH = "Roboto-Bold.ttf";
     public final static int     SCORE_FONT_SIZE = 22;
+    public final static int     SCREEN_FONT_SIZE = 40;
 }

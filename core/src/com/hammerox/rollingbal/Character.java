@@ -27,6 +27,7 @@ public class Character extends InputAdapter {
     private Vector2 lastPosition;
     private Vector2 lastVelocity;
 
+    private boolean isFalling = false;
     private boolean isLanded = false;
     private boolean isJumping = false;
 
@@ -66,10 +67,14 @@ public class Character extends InputAdapter {
 
         // UPDATE
             // Jump status
-        if (isJumping && velocity.y <= 0) isJumping = false;
+        if (isJumping && velocity.y <= 0)
+            isJumping = false;
+
+            // Adding gravity
+        if (isFalling)
+            velocity.mulAdd(WORLD_GRAVITY, delta);
 
             // Position
-        velocity.mulAdd(WORLD_GRAVITY, delta);
         position.mulAdd(velocity, delta);
 
         // COLLISIONS
@@ -94,7 +99,9 @@ public class Character extends InputAdapter {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        jump();
+        if (isFalling) {
+            jump();
+        }
         return false;
     }
 
@@ -152,9 +159,6 @@ public class Character extends InputAdapter {
     }
 
     public boolean landedOnPlatform(Platform platform) {
-        DecimalFormat df = new DecimalFormat("#.####");
-        df.setRoundingMode(RoundingMode.FLOOR);
-
         float yBefore = lastPosition.y - BALL_RADIUS;
         float yAfter = position.y - BALL_RADIUS;
         float top = platform.top;
@@ -188,5 +192,13 @@ public class Character extends InputAdapter {
 
     public Vector2 getVelocity() {
         return velocity;
+    }
+
+    public boolean isFalling() {
+        return isFalling;
+    }
+
+    public void setFalling(boolean falling) {
+        isFalling = falling;
     }
 }

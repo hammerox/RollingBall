@@ -1,6 +1,7 @@
 package com.hammerox.rollingbal;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -27,7 +28,8 @@ public class FallingScreen extends ScreenAdapter {
     private ExtendViewport viewport;
     private ShapeRenderer shapeRenderer;
     private SpriteBatch batch;
-    private BitmapFont font;
+    private BitmapFont fontScore;
+    private BitmapFont fontSpeech;
     private GlyphLayout textButton;
 
     private Character character;
@@ -41,6 +43,7 @@ public class FallingScreen extends ScreenAdapter {
     private float worldHeight;
     private float lastObstacleHeight;
 
+    private boolean hasGameStarted = false;
     private boolean isGameOver = false;
     private int score = 0;
 
@@ -50,7 +53,8 @@ public class FallingScreen extends ScreenAdapter {
 
         shapeRenderer = new ShapeRenderer();
         batch = new SpriteBatch();
-        font = Util.generateFont(FONT_ROBOTO_PATH, SCORE_FONT_SIZE);
+        fontScore = Util.generateFont(FONT_ROBOTO_PATH, SCORE_FONT_SIZE);
+        fontSpeech = Util.generateFont(FONT_ROBOTO_PATH, SCREEN_FONT_SIZE);
         textButton = new GlyphLayout();
 
         viewport = new ExtendViewport(WORLD_SIZE, WORLD_SIZE);
@@ -88,6 +92,13 @@ public class FallingScreen extends ScreenAdapter {
         viewport.apply();
         shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
 
+        // Ready to start game
+        if (!hasGameStarted) {
+            if (Gdx.input.justTouched() || Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+                startGame();
+            }
+        }
+
         if (!isGameOver) {
             // UPDATE
                 // Update player
@@ -104,14 +115,16 @@ public class FallingScreen extends ScreenAdapter {
             if (characterY < cameraBottom + limitToBottomSize) {
                 viewport.getCamera().position.y = characterY + limitToMiddleSize;
                 updateCameraConstants();
-                font.setColor(Color.RED);
+                fontScore.setColor(Color.RED);
             } else {
-                font.setColor(Color.BLACK);
+                fontScore.setColor(Color.BLACK);
             }
-            
-            viewport.getCamera().position.y -= CAMERA_SPEED * delta;
-            cameraTop -= CAMERA_SPEED * delta;
-            cameraBottom -= CAMERA_SPEED * delta;
+
+            if (hasGameStarted) {
+                viewport.getCamera().position.y -= CAMERA_SPEED * delta;
+                cameraTop -= CAMERA_SPEED * delta;
+                cameraBottom -= CAMERA_SPEED * delta;
+            }
 
                 // Create new obstacles, if necessary
             while (cameraBottom - WORLD_SIZE < lastObstacleHeight) {
@@ -148,10 +161,33 @@ public class FallingScreen extends ScreenAdapter {
 
             // Sprite render
         batch.begin();
-        textButton.setText(font, String.valueOf(score));
-        float textX = (viewport.getScreenWidth() - textButton.width) / 2;
-        float textY = textButton.height + viewport.getScreenHeight() / 12;
-        font.draw(batch, textButton, textX, textY);
+            // Start message
+        if (!hasGameStarted) {
+            fontSpeech.setColor(Color.BLACK);
+            textButton.setText(fontSpeech, "Tap to start");
+            float textX = (viewport.getScreenWidth() - textButton.width) / 2;
+            float textY = (viewport.getScreenHeight() + textButton.height) / 2;
+            fontSpeech.draw(batch, textButton, textX, textY);
+        }
+
+            // Show score or game-over message
+        if (isGameOver) {
+            textButton.setText(fontSpeech, String.valueOf(score));
+            float textX = (viewport.getScreenWidth() - textButton.width) / 2;
+            float textY = viewport.getScreenHeight() / 2 + textButton.height;
+            fontSpeech.draw(batch, textButton, textX, textY);
+
+            textButton.setText(fontSpeech, "AWESOME!");
+            textX = (viewport.getScreenWidth() - textButton.width) / 2;
+            textY = viewport.getScreenHeight() / 2 - textButton.height;
+            fontSpeech.draw(batch, textButton, textX, textY);
+        } else {
+            textButton.setText(fontScore, String.valueOf(score));
+            float textX = (viewport.getScreenWidth() - textButton.width) / 2;
+            float textY = textButton.height + viewport.getScreenHeight() / 12;
+            fontScore.draw(batch, textButton, textX, textY);
+        }
+
         batch.end();
 
     }
@@ -161,11 +197,16 @@ public class FallingScreen extends ScreenAdapter {
         Gdx.app.log(TAG, "dispose");
         shapeRenderer.dispose();
         batch.dispose();
-        font.dispose();
+        fontScore.dispose();
     }
 
     private void updateCameraConstants() {
         cameraTop = viewport.getCamera().position.y + worldHeight / 2;
         cameraBottom = viewport.getCamera().position.y - worldHeight / 2;
+    }
+
+    private void startGame() {
+        character.setFalling(true);
+        hasGameStarted = true;
     }
 }
