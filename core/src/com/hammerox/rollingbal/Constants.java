@@ -23,7 +23,8 @@ public class Constants {
     public final static float   BALL_BOUNCE_ABSORPTION = 0f;    // Between 0 and 1
 
     // Screen chasing constants
-    public final static float   CAMERA_SPEED = 80.0f;      // Original is 40. 80 is ok
+    public final static float   CAMERA_SPEED_SLOW = 40.0f;
+    public final static float   CAMERA_SPEED_FAST = 80.0f;
     public final static float   CAMERA_LIMIT_RATIO = 0.3f;    // Between 0 and 0.5
 
     // Platform constants

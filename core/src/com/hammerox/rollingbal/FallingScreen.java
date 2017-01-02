@@ -36,6 +36,7 @@ public class FallingScreen extends ScreenAdapter {
     private float characterY;
     private List<Obstacle> allObstacles;
 
+    private float cameraSpeed;
     private float cameraTopPosition;
     private float cameraBottomPosition;
     private float limitToBottomSize;
@@ -46,6 +47,11 @@ public class FallingScreen extends ScreenAdapter {
     private boolean hasGameStarted = false;
     private boolean isGameOver = false;
     private int score;
+
+
+    public FallingScreen(float cameraSpeed) {
+        this.cameraSpeed = cameraSpeed;
+    }
 
     @Override
     public void show() {
@@ -190,9 +196,9 @@ public class FallingScreen extends ScreenAdapter {
     }
 
     private void moveCamera(float delta) {
-        viewport.getCamera().position.y -= CAMERA_SPEED * delta;
-        cameraTopPosition -= CAMERA_SPEED * delta;
-        cameraBottomPosition -= CAMERA_SPEED * delta;
+        viewport.getCamera().position.y -= cameraSpeed * delta;
+        cameraTopPosition -= cameraSpeed * delta;
+        cameraBottomPosition -= cameraSpeed * delta;
     }
 
     private void followCharacter() {

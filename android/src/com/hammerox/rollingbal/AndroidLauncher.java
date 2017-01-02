@@ -13,8 +13,12 @@ public class AndroidLauncher extends AndroidApplication {
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+        String levelName = getIntent().getStringExtra(LevelActivity.TAG_LEVEL);
+        RollingBallGame.Level level = RollingBallGame.Level.valueOf(levelName);
+
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-        game = new RollingBallGame();
+        game = new RollingBallGame(level);
 		initialize(game, config);
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
