@@ -15,10 +15,10 @@
         tools:context="com.hammerox.rollingbal.LevelActivity">
 
         <Button
-            android:id="@+id/button_classic"
+            android:id="@+id/button_casual"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Classic"/>
+            android:text="Casual"/>
 
         <Button
             android:id="@+id/button_speed"

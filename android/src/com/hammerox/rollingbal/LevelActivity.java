@@ -18,8 +18,8 @@ public class LevelActivity extends AppCompatActivity {
             Intent intent = new Intent(LevelActivity.this, AndroidLauncher.class);
 
             switch (view.getId()) {
-                case R.id.button_classic:
-                    intent.putExtra(TAG_LEVEL, RollingBallGame.Level.CLASSIC.name());
+                case R.id.button_casual:
+                    intent.putExtra(TAG_LEVEL, RollingBallGame.Level.CASUAL.name());
                     break;
                 case R.id.button_speed:
                     intent.putExtra(TAG_LEVEL, RollingBallGame.Level.SPEED.name());
@@ -38,7 +38,7 @@ public class LevelActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         ActivityLevelBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_level);
 
-        binding.buttonClassic.setOnClickListener(clickListener);
+        binding.buttonCasual.setOnClickListener(clickListener);
         binding.buttonSpeed.setOnClickListener(clickListener);
     }
 }
