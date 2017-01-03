@@ -30,16 +30,23 @@ public class Obstacle {
         right = new Platform(rightPosition, rightSize);
     }
 
+    public Obstacle(Vector2 gapPosition, float gapSize, boolean leftIsDeadly, boolean rightIsDeadly) {
+        this(gapPosition, gapSize);
+        left.isDeadly = leftIsDeadly;
+        right.isDeadly = rightIsDeadly;
+    }
+
     public void render(ShapeRenderer shapeRenderer) {
         left.render(shapeRenderer);
         right.render(shapeRenderer);
     }
 
-    public static Obstacle newRandomObstacle(float height) {
+    public static Obstacle newObstacle(float height) {
         Vector2 position = new Vector2();
         float gapSize = MathUtils.random() * Constants.WORLD_SIZE / 3 + Constants.BALL_RADIUS * 2;
         position.x = (Constants.WORLD_SIZE - gapSize) * MathUtils.random();
         position.y = height;
+
         return new Obstacle(position, gapSize);
     }
 

@@ -17,6 +17,8 @@ public class Platform {
     public Vector2 size;
     public float top;
 
+    public boolean isDeadly = false;
+
 
     public Platform(Vector2 position) {
         this.position = position;
@@ -30,9 +32,19 @@ public class Platform {
         top = position.y + size.y;
     }
 
+    public Platform(Vector2 position, Vector2 size, boolean isDeadly) {
+        this(position, size);
+        this.isDeadly = isDeadly;
+    }
+
 
     public void render(ShapeRenderer shapeRenderer) {
-        shapeRenderer.setColor(Color.BLUE);
+        if (isDeadly) {
+            shapeRenderer.setColor(Color.RED);
+        } else {
+            shapeRenderer.setColor(Color.BLUE);
+        }
+
         shapeRenderer.rect(position.x, position.y, size.x, size.y);
     }
 

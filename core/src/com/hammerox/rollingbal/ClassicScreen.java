@@ -48,10 +48,21 @@ public class ClassicScreen extends FallingScreen {
         character.update(delta);
 
         // Player-Platform collisions
+        // TODO - Send all the platform's collisions to character's class
+        // TODO - Save reference of the landed platform on character's class
         for (Obstacle obstacle : allObstacles) {
-            character.landedOnPlatform(obstacle.getLeft());
-            character.landedOnPlatform(obstacle.getRight());
+            if (character.landedOnPlatform(obstacle.getLeft())) {
+                // TODO - Don't set game over directly.
+                if (obstacle.getLeft().isDeadly) setGameOver(true);
+                break;
+            }
+
+            if (character.landedOnPlatform(obstacle.getRight())) {
+                if (obstacle.getRight().isDeadly) setGameOver(true);
+                break;
+            }
         }
+
         float characterY = character.getPosition().y;
 
         // Update camera
@@ -69,7 +80,7 @@ public class ClassicScreen extends FallingScreen {
         // Create new obstacles, if necessary
         while (getCameraBottomPosition() - WORLD_SIZE < lastObstaclePosition) {
             lastObstaclePosition -= OBSTACLE_DISTANCE;
-            allObstacles.add(Obstacle.newRandomObstacle(lastObstaclePosition));
+            allObstacles.add(Obstacle.newObstacle(lastObstaclePosition));
         }
 
         // Remove obstacle from top, if necessary
@@ -84,6 +95,8 @@ public class ClassicScreen extends FallingScreen {
             setScore(- Math.round(characterY));
 
         // End game if player lose
+        // TODO - Set game over on character's death here
+        // TODO - Create a character method to find out if he is dead using the landedPlatform
         boolean isCharacterAboveScreen = characterY - BALL_RADIUS > getCameraTopPosition();
         if (isCharacterAboveScreen)
             setGameOver(true);
