@@ -6,9 +6,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.hammerox.rollingbal.Constants.BALL_RADIUS;
-import static com.hammerox.rollingbal.Constants.OBSTACLE_DISTANCE;
-import static com.hammerox.rollingbal.Constants.WORLD_SIZE;
+import static com.hammerox.rollingbal.Constants.*;
 
 /**
  * Created by Mauricio on 03-Jan-17.
@@ -17,12 +15,30 @@ import static com.hammerox.rollingbal.Constants.WORLD_SIZE;
 public class ClassicScreen extends FallingScreen {
 
     private Character character;
-    private float characterY;
     private List<Obstacle> allObstacles;
     private float lastObstaclePosition;
 
+
     public ClassicScreen(float cameraSpeed) {
         super(cameraSpeed);
+    }
+
+
+    @Override
+    void newGame() {
+        super.newGame();
+
+        character = new Character();
+        character.init(WORLD_SIZE/2, 0);
+        allObstacles = new LinkedList<Obstacle>();
+        allObstacles.clear();
+        lastObstaclePosition = 0;
+    }
+
+    @Override
+    void startGame() {
+        super.startGame();
+        character.setFalling(true);
     }
 
     @Override
@@ -36,7 +52,7 @@ public class ClassicScreen extends FallingScreen {
             character.landedOnPlatform(obstacle.getLeft());
             character.landedOnPlatform(obstacle.getRight());
         }
-        characterY = character.getPosition().y;
+        float characterY = character.getPosition().y;
 
         // Update camera
         boolean isCharacterBelowLimit = characterY < getCameraBottomPosition() + getLimitToBottomSize();
@@ -92,20 +108,4 @@ public class ClassicScreen extends FallingScreen {
         shapeRenderer.end();
     }
 
-    @Override
-    void startGame() {
-        super.startGame();
-        character.setFalling(true);
-    }
-
-    @Override
-    void resetGame() {
-        super.resetGame();
-
-        character = new Character(getViewport());
-        character.init(WORLD_SIZE/2, 0);
-        allObstacles = new LinkedList<Obstacle>();
-        allObstacles.clear();
-        lastObstaclePosition = 0;
-    }
 }

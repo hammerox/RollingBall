@@ -57,7 +57,7 @@ public abstract class FallingScreen extends ScreenAdapter {
 
         viewport = new ExtendViewport(WORLD_SIZE, WORLD_SIZE);
 
-        resetGame();
+        newGame();
     }
 
     @Override
@@ -84,7 +84,7 @@ public abstract class FallingScreen extends ScreenAdapter {
         if (isGameOver) {
             if (Gdx.input.justTouched() || Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
                 // Restart game on touch
-                resetGame();
+                newGame();
             }
         } else {
             updateActors(delta);
@@ -150,16 +150,16 @@ public abstract class FallingScreen extends ScreenAdapter {
         cameraBottomPosition = viewport.getCamera().position.y - worldHeight / 2;
     }
 
-    void startGame() {
-        hasGameStarted = true;
-    }
-
-    void resetGame() {
+    void newGame() {
         viewport.getCamera().position.y = viewport.getWorldHeight() / 2;
         updateCameraConstants();
-
         score = 0;
         isGameOver = false;
+        hasGameStarted = false;
+    }
+
+    void startGame() {
+        hasGameStarted = true;
     }
 
     private void showStartMessage() {

@@ -5,10 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.viewport.Viewport;
 
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
 
 import static com.hammerox.rollingbal.Constants.*;
 import static com.hammerox.rollingbal.Util.removeImprecision;
@@ -19,8 +16,6 @@ import static com.hammerox.rollingbal.Util.removeImprecision;
 
 public class Character extends InputAdapter {
 
-    private Viewport viewport;
-
     private Vector2 position;
     private Vector2 velocity;
 
@@ -29,12 +24,9 @@ public class Character extends InputAdapter {
 
     private boolean isFalling = false;
     private boolean isLanded = false;
-    private boolean isJumping = false;
 
 
-    public Character(Viewport viewport) {
-        this.viewport = viewport;
-
+    public Character() {
         Gdx.input.setInputProcessor(this);
     }
 
@@ -66,10 +58,6 @@ public class Character extends InputAdapter {
         }
 
         // UPDATE
-            // Jump status
-        if (isJumping && velocity.y <= 0)
-            isJumping = false;
-
             // Adding gravity
         if (isFalling)
             velocity.mulAdd(WORLD_GRAVITY, delta);
@@ -99,26 +87,17 @@ public class Character extends InputAdapter {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-//        if (isFalling) {
-//            jump();
-//        }
         return false;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-//        stopJump();
         return false;
     }
 
 
     @Override
     public boolean keyDown(int keycode) {
-//        switch (keycode) {
-//            case Input.Keys.SPACE:
-//                jump();
-//                break;
-//        }
         return false;
     }
 
@@ -129,27 +108,8 @@ public class Character extends InputAdapter {
             case Input.Keys.D:
                 velocity.x = 0;
                 break;
-//            case Input.Keys.SPACE:
-//                stopJump();
-//                break;
         }
         return false;
-    }
-
-
-    public void jump() {
-        if (isLanded) {
-            velocity.y = BALL_JUMP_SPEED;
-            isJumping = true;
-            isLanded = false;
-        }
-    }
-
-    public void stopJump() {
-        if (isJumping) {
-            velocity.y = 0;
-            isJumping = false;
-        }
     }
 
     public void land(float y) {
@@ -172,7 +132,6 @@ public class Character extends InputAdapter {
             land(platform.top);
             return true;
         }
-        // TODO - BUG: After landing on platform and falling, ball can jump on midair.
 
         return false;
     }

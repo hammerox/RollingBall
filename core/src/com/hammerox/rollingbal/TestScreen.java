@@ -33,7 +33,7 @@ public class TestScreen extends ScreenAdapter {
         shapeRenderer = new ShapeRenderer();
         viewport = new ExtendViewport(WORLD_SIZE, WORLD_SIZE);
 
-        character = new Character(viewport);
+        character = new Character();
         character.init(WORLD_SIZE/2, WORLD_SIZE/2);
 
         allPlatforms = new LinkedList<Platform>();
