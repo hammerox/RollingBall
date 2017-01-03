@@ -24,8 +24,8 @@ public class RollingBallGame extends Game {
 
 
     public enum Level {
-        CASUAL(new FallingScreen(CAMERA_SPEED_SLOW)),
-        SPEED(new FallingScreen(CAMERA_SPEED_FAST));
+        CASUAL(new ClassicScreen(CAMERA_SPEED_SLOW)),
+        SPEED(new ClassicScreen(CAMERA_SPEED_FAST));
 
         FallingScreen screen;
 

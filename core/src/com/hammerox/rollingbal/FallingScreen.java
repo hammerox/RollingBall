@@ -12,16 +12,13 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
 
-import java.util.LinkedList;
-import java.util.List;
-
 import static com.hammerox.rollingbal.Constants.*;
 
 /**
  * Created by Mauricio on 27-Dec-16.
  */
 
-public class FallingScreen extends ScreenAdapter {
+public abstract class FallingScreen extends ScreenAdapter {
 
     public final static String TAG = FallingScreen.class.getName();
 
@@ -32,17 +29,12 @@ public class FallingScreen extends ScreenAdapter {
     private BitmapFont fontSpeech;
     private GlyphLayout textButton;
 
-    private Character character;
-    private float characterY;
-    private List<Obstacle> allObstacles;
-
     private float cameraSpeed;
     private float cameraTopPosition;
     private float cameraBottomPosition;
     private float limitToBottomSize;
     private float limitToMiddleSize;
     private float worldHeight;
-    private float lastObstaclePosition;
 
     private boolean hasGameStarted = false;
     private boolean isGameOver = false;
@@ -64,9 +56,6 @@ public class FallingScreen extends ScreenAdapter {
         textButton = new GlyphLayout();
 
         viewport = new ExtendViewport(WORLD_SIZE, WORLD_SIZE);
-
-        character = new Character(viewport);
-        allObstacles = new LinkedList<Obstacle>();
 
         resetGame();
     }
@@ -98,51 +87,12 @@ public class FallingScreen extends ScreenAdapter {
                 resetGame();
             }
         } else {
-            // Update player
-            character.update(delta);
-
-            // Player-Platform collisions
-            for (Obstacle obstacle : allObstacles) {
-                character.landedOnPlatform(obstacle.getLeft());
-                character.landedOnPlatform(obstacle.getRight());
-            }
-            characterY = character.getPosition().y;
-
-            // Update camera
-            boolean isCharacterBelowLimit = characterY < cameraBottomPosition + limitToBottomSize;
-            if (isCharacterBelowLimit) {
-                followCharacter();
-                fontScore.setColor(Color.RED);
-            } else {
-                fontScore.setColor(Color.BLACK);
-            }
-
-            if (hasGameStarted)
-                moveCamera(delta);
-
-            // Create new obstacles, if necessary
-            while (cameraBottomPosition - WORLD_SIZE < lastObstaclePosition) {
-                lastObstaclePosition -= OBSTACLE_DISTANCE;
-                allObstacles.add(Obstacle.newRandomObstacle(lastObstaclePosition));
-            }
-
-            // Remove obstacle from top, if necessary
-            boolean isObstacleAboveScreen = allObstacles.get(0).getGapPosition().y > cameraTopPosition;
-            if (isObstacleAboveScreen)
-                allObstacles.remove(0);
-
-
-            // Update score if better
-            boolean isToUpdateScore = score < -characterY;
-            if (isToUpdateScore)
-                score = - Math.round(characterY);
-
-            // End game if player lose
-            boolean isCharacterAboveScreen = characterY - BALL_RADIUS > cameraTopPosition;
-            if (isCharacterAboveScreen)
-                isGameOver = true;
+            updateActors(delta);
         }
     }
+
+    public abstract void updateActors(float delta);
+    public abstract void renderActors();
 
     @Override
     public void render(float delta) {
@@ -157,18 +107,7 @@ public class FallingScreen extends ScreenAdapter {
         // UPDATE
         update(delta);
 
-        // SHAPE RENDER
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-
-            // Render obstacles
-        for (Obstacle obstacle : allObstacles) {
-            obstacle.render(shapeRenderer);
-        }
-
-            // Render character
-        character.render(shapeRenderer);
-
-        shapeRenderer.end();
+        renderActors();
 
         // SPRITE RENDER
         batch.begin();
@@ -195,37 +134,31 @@ public class FallingScreen extends ScreenAdapter {
         fontScore.dispose();
     }
 
-    private void moveCamera(float delta) {
+    void moveCamera(float delta) {
         viewport.getCamera().position.y -= cameraSpeed * delta;
         cameraTopPosition -= cameraSpeed * delta;
         cameraBottomPosition -= cameraSpeed * delta;
     }
 
-    private void followCharacter() {
+    void followCharacter(float characterY) {
         viewport.getCamera().position.y = characterY + limitToMiddleSize;
         updateCameraConstants();
     }
 
-    private void updateCameraConstants() {
+    void updateCameraConstants() {
         cameraTopPosition = viewport.getCamera().position.y + worldHeight / 2;
         cameraBottomPosition = viewport.getCamera().position.y - worldHeight / 2;
     }
 
-    private void startGame() {
-        character.setFalling(true);
+    void startGame() {
         hasGameStarted = true;
     }
 
-    private void resetGame() {
-        allObstacles.clear();
-
-        character.init(WORLD_SIZE/2, 0);
-
+    void resetGame() {
         viewport.getCamera().position.y = viewport.getWorldHeight() / 2;
         updateCameraConstants();
 
         score = 0;
-        lastObstaclePosition = 0;
         isGameOver = false;
     }
 
@@ -254,5 +187,130 @@ public class FallingScreen extends ScreenAdapter {
         float textX = (viewport.getScreenWidth() - textButton.width) / 2;
         float textY = textButton.height + viewport.getScreenHeight() / 12;
         fontScore.draw(batch, textButton, textX, textY);
+    }
+
+
+    public SpriteBatch getBatch() {
+        return batch;
+    }
+
+    public void setBatch(SpriteBatch batch) {
+        this.batch = batch;
+    }
+
+    public float getCameraBottomPosition() {
+        return cameraBottomPosition;
+    }
+
+    public void setCameraBottomPosition(float cameraBottomPosition) {
+        this.cameraBottomPosition = cameraBottomPosition;
+    }
+
+    public float getCameraSpeed() {
+        return cameraSpeed;
+    }
+
+    public void setCameraSpeed(float cameraSpeed) {
+        this.cameraSpeed = cameraSpeed;
+    }
+
+    public float getCameraTopPosition() {
+        return cameraTopPosition;
+    }
+
+    public void setCameraTopPosition(float cameraTopPosition) {
+        this.cameraTopPosition = cameraTopPosition;
+    }
+
+    public BitmapFont getFontScore() {
+        return fontScore;
+    }
+
+    public void setFontScore(BitmapFont fontScore) {
+        this.fontScore = fontScore;
+    }
+
+    public BitmapFont getFontSpeech() {
+        return fontSpeech;
+    }
+
+    public void setFontSpeech(BitmapFont fontSpeech) {
+        this.fontSpeech = fontSpeech;
+    }
+
+    public boolean hasGameStarted() {
+        return hasGameStarted;
+    }
+
+    public void setHasGameStarted(boolean hasGameStarted) {
+        this.hasGameStarted = hasGameStarted;
+    }
+
+    public boolean isGameOver() {
+        return isGameOver;
+    }
+
+    public void setGameOver(boolean gameOver) {
+        isGameOver = gameOver;
+    }
+
+    public float getLimitToBottomSize() {
+        return limitToBottomSize;
+    }
+
+    public void setLimitToBottomSize(float limitToBottomSize) {
+        this.limitToBottomSize = limitToBottomSize;
+    }
+
+    public float getLimitToMiddleSize() {
+        return limitToMiddleSize;
+    }
+
+    public void setLimitToMiddleSize(float limitToMiddleSize) {
+        this.limitToMiddleSize = limitToMiddleSize;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public ShapeRenderer getShapeRenderer() {
+        return shapeRenderer;
+    }
+
+    public void setShapeRenderer(ShapeRenderer shapeRenderer) {
+        this.shapeRenderer = shapeRenderer;
+    }
+
+    public static String getTAG() {
+        return TAG;
+    }
+
+    public GlyphLayout getTextButton() {
+        return textButton;
+    }
+
+    public void setTextButton(GlyphLayout textButton) {
+        this.textButton = textButton;
+    }
+
+    public ExtendViewport getViewport() {
+        return viewport;
+    }
+
+    public void setViewport(ExtendViewport viewport) {
+        this.viewport = viewport;
+    }
+
+    public float getWorldHeight() {
+        return worldHeight;
+    }
+
+    public void setWorldHeight(float worldHeight) {
+        this.worldHeight = worldHeight;
     }
 }
