@@ -10,7 +10,7 @@ public class RollingBallGame extends Game {
 
     public RollingBallGame() {
         // Default level
-        level = Level.SPEED;
+        level = Level.SPIKES;
     }
 
     public RollingBallGame(Level level) {
@@ -19,18 +19,21 @@ public class RollingBallGame extends Game {
 
     @Override
 	public void create () {
-        setScreen(level.screen);
+        setScreen(new ClassicScreen(level));
     }
 
 
     public enum Level {
-        CASUAL(new ClassicScreen(CAMERA_SPEED_SLOW)),
-        SPEED(new ClassicScreen(CAMERA_SPEED_FAST));
+        CASUAL(CAMERA_SPEED_SLOW, false),
+        SPEED(CAMERA_SPEED_FAST, false),
+        SPIKES(CAMERA_SPEED_SLOW, true);
 
-        FallingScreen screen;
+        float gameSpeed;
+        boolean gameCanKill;
 
-        Level(FallingScreen screen) {
-            this.screen = screen;
+        Level(float gameSpeed, boolean gameCanKill) {
+            this.gameSpeed = gameSpeed;
+            this.gameCanKill = gameCanKill;
         }
     }
 

@@ -14,13 +14,17 @@ import static com.hammerox.rollingbal.Constants.*;
 
 public class ClassicScreen extends FallingScreen {
 
+    private RollingBallGame.Level level;
+
     private Character character;
     private List<Obstacle> allObstacles;
+    private int obstacleCount;
     private float lastObstaclePosition;
 
 
-    public ClassicScreen(float cameraSpeed) {
-        super(cameraSpeed);
+    public ClassicScreen(RollingBallGame.Level level) {
+        super(level.gameSpeed);
+        this.level = level;
     }
 
 
@@ -32,6 +36,7 @@ public class ClassicScreen extends FallingScreen {
         character.init(WORLD_SIZE/2, 0);
         allObstacles = new LinkedList<Obstacle>();
         allObstacles.clear();
+        obstacleCount = 0;
         lastObstaclePosition = 0;
     }
 
@@ -72,6 +77,7 @@ public class ClassicScreen extends FallingScreen {
         while (getCameraBottomPosition() - WORLD_SIZE < lastObstaclePosition) {
             lastObstaclePosition -= OBSTACLE_DISTANCE;
             allObstacles.add(Obstacle.newObstacle(lastObstaclePosition));
+            obstacleCount++;
         }
 
         // Remove obstacle from top, if necessary
@@ -86,7 +92,6 @@ public class ClassicScreen extends FallingScreen {
             setScore(- Math.round(characterY));
 
         // End game if player lose
-        // TODO - Create a character method to find out if he is dead using the landedPlatform
         boolean isCharacterAboveScreen = characterY - BALL_RADIUS > getCameraTopPosition();
         if (isCharacterAboveScreen || isCharacterDead)
             setGameOver(true);
