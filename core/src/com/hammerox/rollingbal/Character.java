@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 
 
+import java.util.List;
+
 import static com.hammerox.rollingbal.Constants.*;
 import static com.hammerox.rollingbal.Util.removeImprecision;
 
@@ -112,12 +114,25 @@ public class Character extends InputAdapter {
         return false;
     }
 
+    /** Update character's position when landed on something.
+     *
+     * @param y = Is the surface's Y position which the character has landed.
+     */
     public void land(float y) {
         velocity.y = - velocity.y * BALL_BOUNCE_ABSORPTION;
         position.y = y + BALL_RADIUS;
         isLanded = true;
     }
 
+    /** Check if character has landed on a platform.
+     *
+     * The check is made from character's last position and current position.
+     * If last position was above the platform...
+     * and current position is inside the platform...
+     * then character's current position is adjusted.
+     *
+     * It was necessary to remove some decimal precision to avoid truncation error.
+     */
     public boolean landedOnPlatform(Platform platform) {
         float yBefore = lastPosition.y - BALL_RADIUS;
         float yAfter = position.y - BALL_RADIUS;
@@ -136,6 +151,30 @@ public class Character extends InputAdapter {
         return false;
     }
 
+    /** Search on all obstacles if character has landed on any platforms.
+     *
+     * @return if character has landed, it returns the landed platform.
+     * if not, it returns null.
+     */
+    public Platform getLandedPlatform(List<Obstacle> obstacleList) {
+        for (Obstacle obstacle : obstacleList) {
+            if (landedOnPlatform(obstacle.getLeft())) {
+                return obstacle.getLeft();
+            }
+
+            if (landedOnPlatform(obstacle.getRight())) {
+                return obstacle.getRight();
+            }
+        }
+
+        isLanded = false;
+        return null;
+    }
+
+
+    /*
+    GETTERS AND SETTERS
+    */
 
     public Vector2 getLastPosition() {
         return lastPosition;
