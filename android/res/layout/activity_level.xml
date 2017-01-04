@@ -26,5 +26,11 @@
             android:layout_height="wrap_content"
             android:text="Speed"/>
 
+        <Button
+            android:id="@+id/button_spikes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Spikes"/>
+
     </LinearLayout>
 </layout>
