@@ -3,8 +3,6 @@ package com.hammerox.rollingbal;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
-import java.util.LinkedList;
-import java.util.List;
 
 import static com.hammerox.rollingbal.Constants.*;
 
@@ -17,9 +15,7 @@ public class ClassicScreen extends FallingScreen {
     private RollingBallGame.Level level;
 
     private Character character;
-    private List<Obstacle> allObstacles;
-    private int obstacleCount;
-    private float lastObstaclePosition;
+    private Obstacles obstacles;
 
 
     public ClassicScreen(RollingBallGame.Level level) {
@@ -34,10 +30,7 @@ public class ClassicScreen extends FallingScreen {
 
         character = new Character();
         character.init(WORLD_SIZE/2, 0);
-        allObstacles = new LinkedList<Obstacle>();
-        allObstacles.clear();
-        obstacleCount = 0;
-        lastObstaclePosition = 0;
+        obstacles = new Obstacles(level);
     }
 
     @Override
@@ -53,7 +46,7 @@ public class ClassicScreen extends FallingScreen {
         character.update(delta);
 
         // Player-Platform collisions
-        Platform landedPlatform = character.getLandedPlatform(allObstacles);
+        Platform landedPlatform = character.getLandedPlatform(obstacles);
         boolean isCharacterDead = false;
         if (landedPlatform != null)
             if (landedPlatform.isDeadly)
@@ -74,16 +67,14 @@ public class ClassicScreen extends FallingScreen {
             moveCamera(delta);
 
         // Create new obstacles, if necessary
-        while (getCameraBottomPosition() - WORLD_SIZE < lastObstaclePosition) {
-            lastObstaclePosition -= OBSTACLE_DISTANCE;
-            allObstacles.add(Obstacle.newObstacle(level, lastObstaclePosition));
-            obstacleCount++;
+        while (getCameraBottomPosition() - WORLD_SIZE < obstacles.getLastPosition()) {
+            obstacles.addObstacle();
         }
 
         // Remove obstacle from top, if necessary
-        boolean isObstacleAboveScreen = allObstacles.get(0).getGapPosition().y > getCameraTopPosition();
+        boolean isObstacleAboveScreen = obstacles.get(0).getGapPosition().y > getCameraTopPosition();
         if (isObstacleAboveScreen)
-            allObstacles.remove(0);
+            obstacles.remove(0);
 
 
         // Update score if better
@@ -106,9 +97,7 @@ public class ClassicScreen extends FallingScreen {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
         // Render obstacles
-        for (Obstacle obstacle : allObstacles) {
-            obstacle.render(shapeRenderer);
-        }
+        obstacles.render(shapeRenderer);
 
         // Render character
         character.render(shapeRenderer);

@@ -32,6 +32,12 @@ public class Obstacle {
         right = new Platform(rightPosition, rightSize);
     }
 
+    public Obstacle(Vector2 gapPosition, float gapSize, boolean bothAreDeadly) {
+        this(gapPosition, gapSize);
+        left.isDeadly = bothAreDeadly;
+        right.isDeadly = bothAreDeadly;
+    }
+
     public Obstacle(Vector2 gapPosition, float gapSize, boolean leftIsDeadly, boolean rightIsDeadly) {
         this(gapPosition, gapSize);
         left.isDeadly = leftIsDeadly;
@@ -43,16 +49,11 @@ public class Obstacle {
         right.render(shapeRenderer);
     }
 
-    public static Obstacle newObstacle(RollingBallGame.Level level, float positionY) {
+    public static Obstacle randomObstacle(float positionY, boolean isDeadly) {
         float gapSize = randomGapSize();
         Vector2 position = randomGapPosition(gapSize, positionY);
 
-        switch (level) {
-            case SPIKES:
-                return spikesRandomObstacle(position, gapSize);
-            default:
-                return new Obstacle(position, gapSize);
-        }
+        return new Obstacle(position, gapSize, isDeadly);
     }
 
     private static float randomGapSize() {
@@ -67,12 +68,6 @@ public class Obstacle {
         return position;
     }
 
-    private static Obstacle spikesRandomObstacle(Vector2 position, float gapSize) {
-        float random = MathUtils.random();
-        return (random > SPIKE_CREATION_CHANCE)
-                ? new Obstacle(position, gapSize)
-                : new Obstacle(position, gapSize, true, true);
-    }
 
     /*
     GETTERS AND SETTERS
