@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.hammerox.rollingbal.actors.Platform;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -23,8 +24,8 @@ public class TestScreen extends ScreenAdapter {
     private ExtendViewport viewport;
     private ShapeRenderer shapeRenderer;
 
-    private Character character;
-    private List<Platform> allPlatforms;
+    private com.hammerox.rollingbal.actors.Character character;
+    private List<com.hammerox.rollingbal.actors.Platform> allPlatforms;
 
     @Override
     public void show() {
@@ -33,14 +34,14 @@ public class TestScreen extends ScreenAdapter {
         shapeRenderer = new ShapeRenderer();
         viewport = new ExtendViewport(WORLD_SIZE, WORLD_SIZE);
 
-        character = new Character();
+        character = new com.hammerox.rollingbal.actors.Character();
         character.init(WORLD_SIZE/2, WORLD_SIZE/2);
 
-        allPlatforms = new LinkedList<Platform>();
+        allPlatforms = new LinkedList<com.hammerox.rollingbal.actors.Platform>();
         float add = WORLD_SIZE / 5.0f;
         float bottom = 0;
         for (int i = 0; i < 5; i++) {
-            allPlatforms.add(Platform.newRandomPlatform(0, bottom, WORLD_SIZE, bottom + add));
+            allPlatforms.add(com.hammerox.rollingbal.actors.Platform.newRandomPlatform(0, bottom, WORLD_SIZE, bottom + add));
             bottom += add;
         }
     }
@@ -73,7 +74,7 @@ public class TestScreen extends ScreenAdapter {
                 : WORLD_SIZE / 2;
 
             // Ball-Platform collisions
-        for (Platform platform : allPlatforms) {
+        for (com.hammerox.rollingbal.actors.Platform platform : allPlatforms) {
             character.landedOnPlatform(platform);
         }
 

@@ -2,6 +2,8 @@ package com.hammerox.rollingbal;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.hammerox.rollingbal.actors.Obstacles;
+import com.hammerox.rollingbal.actors.Platform;
 
 
 import static com.hammerox.rollingbal.Constants.*;
@@ -14,8 +16,8 @@ public class ClassicScreen extends FallingScreen {
 
     private RollingBallGame.Level level;
 
-    private Character character;
-    private Obstacles obstacles;
+    private com.hammerox.rollingbal.actors.Character character;
+    private com.hammerox.rollingbal.actors.Obstacles obstacles;
 
 
     public ClassicScreen(RollingBallGame.Level level) {
@@ -28,7 +30,7 @@ public class ClassicScreen extends FallingScreen {
     void newGame() {
         super.newGame();
 
-        character = new Character();
+        character = new com.hammerox.rollingbal.actors.Character();
         character.init(WORLD_SIZE/2, 0);
         obstacles = new Obstacles(level);
     }
