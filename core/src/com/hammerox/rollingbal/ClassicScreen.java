@@ -76,7 +76,7 @@ public class ClassicScreen extends FallingScreen {
         // Create new obstacles, if necessary
         while (getCameraBottomPosition() - WORLD_SIZE < lastObstaclePosition) {
             lastObstaclePosition -= OBSTACLE_DISTANCE;
-            allObstacles.add(Obstacle.newObstacle(lastObstaclePosition));
+            allObstacles.add(Obstacle.newObstacle(level, lastObstaclePosition));
             obstacleCount++;
         }
 

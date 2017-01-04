@@ -32,6 +32,7 @@ public class Constants {
 
     // Obstacle constants
     public final static float   OBSTACLE_DISTANCE = WORLD_SIZE / 3;
+    public final static float   SPIKE_CREATION_CHANCE = 0.3f;
 
     // Font constants
     public final static String  FONT_ROBOTO_PATH = "Roboto-Bold.ttf";

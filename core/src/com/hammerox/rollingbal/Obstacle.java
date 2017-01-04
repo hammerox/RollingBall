@@ -4,6 +4,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
+import static com.hammerox.rollingbal.Constants.*;
+
 /**
  * Created by Mauricio on 27-Dec-16.
  */
@@ -18,7 +20,7 @@ public class Obstacle {
 
     public Obstacle(Vector2 gapPosition, float gapSize) {
         this.gapPosition = gapPosition;
-        this.gapSize = Constants.PLAT_SIZE_DEFAULT.cpy();
+        this.gapSize = PLAT_SIZE_DEFAULT.cpy();
         this.gapSize.x = gapSize;
 
         Vector2 leftPosition = new Vector2(0, gapPosition.y);
@@ -26,7 +28,7 @@ public class Obstacle {
         left = new Platform(leftPosition, leftSize);
 
         Vector2 rightPosition = new Vector2(gapPosition.x + this.gapSize.x, gapPosition.y);
-        Vector2 rightSize = new Vector2(Constants.WORLD_SIZE - (gapPosition.x + this.gapSize.x), this.gapSize.y);
+        Vector2 rightSize = new Vector2(WORLD_SIZE - (gapPosition.x + this.gapSize.x), this.gapSize.y);
         right = new Platform(rightPosition, rightSize);
     }
 
@@ -41,13 +43,35 @@ public class Obstacle {
         right.render(shapeRenderer);
     }
 
-    public static Obstacle newObstacle(float height) {
-        Vector2 position = new Vector2();
-        float gapSize = MathUtils.random() * Constants.WORLD_SIZE / 3 + Constants.BALL_RADIUS * 2;
-        position.x = (Constants.WORLD_SIZE - gapSize) * MathUtils.random();
-        position.y = height;
+    public static Obstacle newObstacle(RollingBallGame.Level level, float positionY) {
+        float gapSize = randomGapSize();
+        Vector2 position = randomGapPosition(gapSize, positionY);
 
-        return new Obstacle(position, gapSize);
+        switch (level) {
+            case SPIKES:
+                return spikesRandomObstacle(position, gapSize);
+            default:
+                return new Obstacle(position, gapSize);
+        }
+    }
+
+    private static float randomGapSize() {
+        return MathUtils.random() * WORLD_SIZE / 3 + BALL_RADIUS * 2;
+    }
+
+    private static Vector2 randomGapPosition(float gapSize, float positionY) {
+        Vector2 position = new Vector2();
+        position.x = (WORLD_SIZE - gapSize) * MathUtils.random();
+        position.y = positionY;
+
+        return position;
+    }
+
+    private static Obstacle spikesRandomObstacle(Vector2 position, float gapSize) {
+        float random = MathUtils.random();
+        return (random > SPIKE_CREATION_CHANCE)
+                ? new Obstacle(position, gapSize)
+                : new Obstacle(position, gapSize, true, true);
     }
 
     /*
