@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector2;
 
 
 import java.util.List;
@@ -18,12 +17,6 @@ import static com.hammerox.rollingbal.Util.removeImprecision;
 
 public class Character extends Actor implements InputProcessor{
 
-//    TODO - Remove these variables.
-    private Vector2 position = getPosition();
-    private Vector2 velocity = getVelocity();
-    private Vector2 lastPosition = getLastPosition();
-    private Vector2 lastVelocity = getLastVelocity();
-
     private boolean isFalling = false;
 
 
@@ -33,15 +26,6 @@ public class Character extends Actor implements InputProcessor{
         Gdx.input.setInputProcessor(this);
     }
 
-
-    public void init(float x, float y) {
-        position = new Vector2(x, y);
-        velocity = new Vector2(0, 0);
-
-        lastPosition = position.cpy();
-        lastVelocity = velocity.cpy();
-    }
-
     @Override
     public void move(float delta) {
         // INPUT RESPONSE
@@ -49,31 +33,31 @@ public class Character extends Actor implements InputProcessor{
         float accelerometer;
 
         accelerometer = -Gdx.input.getAccelerometerX();
-        velocity.x = accelerometer * delta * ACCELEROMETER_FACTOR;
+        getVelocity().x = accelerometer * delta * ACCELEROMETER_FACTOR;
 
         // A
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            velocity.x = - BALL_INPUT_VELOCITY;
+            getVelocity().x = - BALL_INPUT_VELOCITY;
         }
         // D
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            velocity.x = BALL_INPUT_VELOCITY;
+            getVelocity().x = BALL_INPUT_VELOCITY;
         }
 
         // UPDATE
         // Adding gravity
         if (isFalling)
-            velocity.mulAdd(WORLD_GRAVITY, delta);
+            getVelocity().mulAdd(WORLD_GRAVITY, delta);
 
         // Position
-        position.mulAdd(velocity, delta);
+        getPosition().mulAdd(getVelocity(), delta);
 
         // COLLISIONS
         // With walls
-        if (position.x - BALL_RADIUS < 0) {
-            position.x = BALL_RADIUS;
-        } else if (position.x + BALL_RADIUS > WORLD_SIZE) {
-            position.x = WORLD_SIZE - BALL_RADIUS;
+        if (getPosition().x - BALL_RADIUS < 0) {
+            getPosition().x = BALL_RADIUS;
+        } else if (getPosition().x + BALL_RADIUS > WORLD_SIZE) {
+            getPosition().x = WORLD_SIZE - BALL_RADIUS;
         }
     }
 
@@ -81,7 +65,7 @@ public class Character extends Actor implements InputProcessor{
     public void renderShape(ShapeRenderer shapeRenderer) {
         // RENDER
         shapeRenderer.setColor(0.5f, 0, 0, 1);
-        shapeRenderer.circle(position.x, position.y, BALL_RADIUS, 50);
+        shapeRenderer.circle(getPosition().x, getPosition().y, BALL_RADIUS, 50);
     }
 
     @Override
@@ -89,7 +73,7 @@ public class Character extends Actor implements InputProcessor{
         switch (keycode) {
             case Input.Keys.A:
             case Input.Keys.D:
-                velocity.x = 0;
+                getVelocity().x = 0;
                 break;
         }
         return false;
@@ -100,8 +84,8 @@ public class Character extends Actor implements InputProcessor{
      * @param y = Is the surface's Y position which the character has landed.
      */
     public void land(float y) {
-        velocity.y = - velocity.y * BALL_BOUNCE_ABSORPTION;
-        position.y = y + BALL_RADIUS;
+        getVelocity().y = - getVelocity().y * BALL_BOUNCE_ABSORPTION;
+        getPosition().y = y + BALL_RADIUS;
     }
 
     /** Check if character has landed on a platform.
@@ -114,14 +98,14 @@ public class Character extends Actor implements InputProcessor{
      * It was necessary to remove some decimal precision to avoid truncation error.
      */
     public boolean landedOnPlatform(Platform platform) {
-        float yBefore = lastPosition.y - BALL_RADIUS;
-        float yAfter = position.y - BALL_RADIUS;
+        float yBefore = getLastPosition().y - BALL_RADIUS;
+        float yAfter = getPosition().y - BALL_RADIUS;
         float top = platform.getTop();
 
         boolean wasOver = removeImprecision(yBefore) >= removeImprecision(top);
         boolean isUnder = yAfter < top;
-        boolean isInside = position.x >= platform.getPosition().x
-                && position.x <= platform.getPosition().x + platform.getSize().x;
+        boolean isInside = getPosition().x >= platform.getPosition().x
+                && getPosition().x <= platform.getPosition().x + platform.getSize().x;
 
         if (wasOver && isUnder && isInside) {
             land(platform.getTop());
