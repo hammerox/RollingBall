@@ -1,4 +1,4 @@
-package com.hammerox.rollingbal;
+package com.hammerox.rollingbal.actors;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
