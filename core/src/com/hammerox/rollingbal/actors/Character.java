@@ -18,9 +18,9 @@ import static com.hammerox.rollingbal.Util.removeImprecision;
 
 public class Character extends Actor implements InputProcessor{
 
+//    TODO - Remove these variables.
     private Vector2 position = getPosition();
     private Vector2 velocity = getVelocity();
-
     private Vector2 lastPosition = getLastPosition();
     private Vector2 lastVelocity = getLastVelocity();
 
@@ -28,7 +28,8 @@ public class Character extends Actor implements InputProcessor{
 
 
     public Character(float x, float y) {
-        super(x,y);
+        // TODO - Character's size is still hard coded. Refactor to Actor's standard.
+        super(x,y, 0, 0);
         Gdx.input.setInputProcessor(this);
     }
 

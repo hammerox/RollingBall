@@ -11,7 +11,7 @@ import static com.hammerox.rollingbal.Constants.*;
  * Created by Mauricio on 23-Dec-16.
  */
 
-public class Platform {
+public class Platform extends Actor {
 
     public Vector2 position;
     public Vector2 size;
@@ -19,6 +19,22 @@ public class Platform {
 
     public boolean isDeadly = false;
 
+
+    @Override
+    public void move(float delta) {
+        // Do nothing
+    }
+
+    @Override
+    public void renderShape(ShapeRenderer shapeRenderer) {
+        if (isDeadly) {
+            shapeRenderer.setColor(Color.RED);
+        } else {
+            shapeRenderer.setColor(Color.BLUE);
+        }
+
+        shapeRenderer.rect(position.x, position.y, size.x, size.y);
+    }
 
     public Platform(Vector2 position) {
         this.position = position;
