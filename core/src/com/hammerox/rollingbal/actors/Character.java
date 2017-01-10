@@ -25,7 +25,6 @@ public class Character extends Actor implements InputProcessor{
     private Vector2 lastVelocity = getLastVelocity();
 
     private boolean isFalling = false;
-    private boolean isLanded = false;
 
 
     public Character(float x, float y) {
@@ -84,52 +83,6 @@ public class Character extends Actor implements InputProcessor{
         shapeRenderer.circle(position.x, position.y, BALL_RADIUS, 50);
     }
 
-//    public void update(float delta) {
-//        // INPUT RESPONSE
-//            // Accelerometer
-//        float accelerometer;
-//
-//        accelerometer = -Gdx.input.getAccelerometerX();
-//        velocity.x = accelerometer * delta * ACCELEROMETER_FACTOR;
-//
-//            // A
-//        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-//            velocity.x = - BALL_INPUT_VELOCITY;
-//        }
-//            // D
-//        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-//            velocity.x = BALL_INPUT_VELOCITY;
-//        }
-//
-//        // UPDATE
-//            // Adding gravity
-//        if (isFalling)
-//            velocity.mulAdd(WORLD_GRAVITY, delta);
-//
-//            // Position
-//        position.mulAdd(velocity, delta);
-//
-//        // COLLISIONS
-//            // With walls
-//        if (position.x - BALL_RADIUS < 0) {
-//            position.x = BALL_RADIUS;
-//        } else if (position.x + BALL_RADIUS > WORLD_SIZE) {
-//            position.x = WORLD_SIZE - BALL_RADIUS;
-//        }
-//    }
-
-
-//    public void render(ShapeRenderer shapeRenderer) {
-//        // FINISH UPDATING
-//        lastPosition.set(position);
-//        lastVelocity.set(velocity);
-//
-//        // RENDER
-//        shapeRenderer.setColor(0.5f, 0, 0, 1);
-//        shapeRenderer.circle(position.x, position.y, BALL_RADIUS, 50);
-//    }
-
-
     @Override
     public boolean keyUp(int keycode) {
         switch (keycode) {
@@ -141,41 +94,6 @@ public class Character extends Actor implements InputProcessor{
         return false;
     }
 
-    @Override
-    public boolean keyDown(int keycode) {
-        return false;
-    }
-
-    @Override
-    public boolean keyTyped(char character) {
-        return false;
-    }
-
-    @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) {
-        return false;
-    }
-
-    @Override
-    public boolean mouseMoved(int screenX, int screenY) {
-        return false;
-    }
-
-    @Override
-    public boolean scrolled(int amount) {
-        return false;
-    }
-
-    @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        return false;
-    }
-
-    @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        return false;
-    }
-
     /** Update character's position when landed on something.
      *
      * @param y = Is the surface's Y position which the character has landed.
@@ -183,7 +101,6 @@ public class Character extends Actor implements InputProcessor{
     public void land(float y) {
         velocity.y = - velocity.y * BALL_BOUNCE_ABSORPTION;
         position.y = y + BALL_RADIUS;
-        isLanded = true;
     }
 
     /** Check if character has landed on a platform.
@@ -229,10 +146,46 @@ public class Character extends Actor implements InputProcessor{
             }
         }
 
-        isLanded = false;
         return null;
     }
 
+    /*
+    * NON USED INTERFACE METHODS
+    * */
+    @Override
+    public boolean keyDown(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyTyped(char character) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        return false;
+    }
+
+    @Override
+    public boolean mouseMoved(int screenX, int screenY) {
+        return false;
+    }
+
+    @Override
+    public boolean scrolled(int amount) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
 
     /*
     GETTERS AND SETTERS
