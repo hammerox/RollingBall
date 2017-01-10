@@ -136,14 +136,14 @@ public class Character extends Actor implements InputProcessor{
      * @return if character has landed, it returns the landed platform.
      * if not, it returns null.
      */
-    public Platform getLandedPlatform(List<Obstacle> obstacleList) {
-        for (Obstacle obstacle : obstacleList) {
-            if (landedOnPlatform(obstacle.getLeftPlat())) {
-                return obstacle.getLeftPlat();
+    public Platform getLandedPlatform(List<DoublePlatform> doublePlatformList) {
+        for (DoublePlatform doublePlatform : doublePlatformList) {
+            if (landedOnPlatform(doublePlatform.getLeftPlat())) {
+                return doublePlatform.getLeftPlat();
             }
 
-            if (landedOnPlatform(obstacle.getRightPlat())) {
-                return obstacle.getRightPlat();
+            if (landedOnPlatform(doublePlatform.getRightPlat())) {
+                return doublePlatform.getRightPlat();
             }
         }
 

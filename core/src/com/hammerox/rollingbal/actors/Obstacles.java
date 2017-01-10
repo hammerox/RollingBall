@@ -12,7 +12,7 @@ import static com.hammerox.rollingbal.Constants.*;
  * Created by Mauricio on 04-Jan-17.
  */
 
-public class Obstacles extends ArrayList<Obstacle> {
+public class Obstacles extends ArrayList<DoublePlatform> {
 
     private RollingBallGame.Level level;
     private int totalCount = 0;
@@ -37,22 +37,22 @@ public class Obstacles extends ArrayList<Obstacle> {
                 add(spikeRandomGenerator(lastPosition));
                 break;
             default:
-                add(Obstacle.randomObstacle(lastPosition, false));
+                add(DoublePlatform.randomObstacle(lastPosition, false));
         }
 
         totalCount++;
     }
 
     public void render(ShapeRenderer shapeRenderer) {
-        for (Obstacle obstacle : this) {
-            obstacle.render(shapeRenderer);
+        for (DoublePlatform doublePlatform : this) {
+            doublePlatform.render(shapeRenderer);
         }
     }
 
-    private static Obstacle spikeRandomGenerator(float position) {
+    private static DoublePlatform spikeRandomGenerator(float position) {
         return (MathUtils.random() > SPIKE_CREATION_CHANCE)
-                ? Obstacle.randomObstacle(position, false)
-                : Obstacle.randomObstacle(position, true);
+                ? DoublePlatform.randomObstacle(position, false)
+                : DoublePlatform.randomObstacle(position, true);
     }
 
 

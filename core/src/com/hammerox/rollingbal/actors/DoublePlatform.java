@@ -10,23 +10,23 @@ import static com.hammerox.rollingbal.Constants.*;
  * Created by Mauricio on 27-Dec-16.
  */
 
-public class Obstacle extends Actor {
+public class DoublePlatform extends Actor {
 
     private Platform leftPlat;
     private Platform rightPlat;
 
-    public Obstacle(Vector2 gapPosition, float gapSize, boolean leftIsDeadly, boolean rightIsDeadly) {
+    public DoublePlatform(Vector2 gapPosition, float gapSize, boolean leftIsDeadly, boolean rightIsDeadly) {
         super(gapPosition, new Vector2(gapSize, PLAT_SIZE_DEFAULT.y));
 
         leftPlat = createLeftPlat(leftIsDeadly);
         rightPlat = createRightPlat(rightIsDeadly);
     }
 
-    public Obstacle(Vector2 gapPosition, float gapSize) {
+    public DoublePlatform(Vector2 gapPosition, float gapSize) {
         this(gapPosition, gapSize, false, false);
     }
 
-    public Obstacle(Vector2 gapPosition, float gapSize, boolean bothAreDeadly) {
+    public DoublePlatform(Vector2 gapPosition, float gapSize, boolean bothAreDeadly) {
         this(gapPosition, gapSize, bothAreDeadly, bothAreDeadly);
     }
 
@@ -41,11 +41,11 @@ public class Obstacle extends Actor {
         rightPlat.render(shapeRenderer);
     }
 
-    public static Obstacle randomObstacle(float positionY, boolean isDeadly) {
+    public static DoublePlatform randomObstacle(float positionY, boolean isDeadly) {
         float gapSize = randomGapSize();
         Vector2 position = randomGapPosition(gapSize, positionY);
 
-        return new Obstacle(position, gapSize, isDeadly);
+        return new DoublePlatform(position, gapSize, isDeadly);
     }
 
     private static float randomGapSize() {
