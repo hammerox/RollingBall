@@ -9,13 +9,65 @@ import com.badlogic.gdx.math.Vector2;
 
 public abstract class Actor {
 
-    Vector2 position;
-    Vector2 velocity;
-    Vector2 lastPosition;
-    Vector2 lastVelocity;
-    Vector2 size;
+    private Vector2 position;
+    private Vector2 velocity;
+    private Vector2 lastPosition;
+    private Vector2 lastVelocity;
+    private Vector2 size;
 
     public abstract void renderShape(ShapeRenderer shapeRenderer);
     public abstract void move(float delta);
 
+    public void update(float delta) {
+        move(delta);
+        saveMovement();
+    }
+
+    public void saveMovement() {
+        lastPosition.set(position);
+        lastVelocity.set(velocity);
+    }
+
+    /*
+    * GETTERS AND SETTERS
+    */
+    public Vector2 getLastPosition() {
+        return lastPosition;
+    }
+
+    public void setLastPosition(Vector2 lastPosition) {
+        this.lastPosition = lastPosition;
+    }
+
+    public Vector2 getLastVelocity() {
+        return lastVelocity;
+    }
+
+    public void setLastVelocity(Vector2 lastVelocity) {
+        this.lastVelocity = lastVelocity;
+    }
+
+    public Vector2 getPosition() {
+        return position;
+    }
+
+    public void setPosition(Vector2 position) {
+        this.position = position;
+    }
+
+    public Vector2 getSize() {
+        return size;
+    }
+
+    public void setSize(Vector2 size) {
+        this.size = size;
+    }
+
+    public Vector2 getVelocity() {
+        return velocity;
+    }
+
+    public void setVelocity(Vector2 velocity) {
+        this.velocity = velocity;
+    }
 }
