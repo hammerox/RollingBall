@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.hammerox.rollingbal.actors.Actor;
 
 
 import static com.hammerox.rollingbal.Constants.*;
@@ -134,15 +135,28 @@ public abstract class FallingScreen extends ScreenAdapter {
         fontScore.dispose();
     }
 
-    void moveCamera(float delta) {
-        viewport.getCamera().position.y -= cameraSpeed * delta;
-        cameraTopPosition -= cameraSpeed * delta;
-        cameraBottomPosition -= cameraSpeed * delta;
+    void moveCameraWithActor(float delta, Actor actor) {
+        followActorOnLimit(actor);
+        moveCamera(delta);
     }
 
-    void followCharacter(float characterY) {
-        viewport.getCamera().position.y = characterY + limitToMiddleSize;
-        updateCameraConstants();
+    void moveCamera(float delta) {
+        if (hasGameStarted) {
+            viewport.getCamera().position.y -= cameraSpeed * delta;
+            cameraTopPosition -= cameraSpeed * delta;
+            cameraBottomPosition -= cameraSpeed * delta;
+        }
+    }
+
+    void followActorOnLimit(Actor actor) {
+        boolean isActorBelowLimit = actor.getPosition().y < cameraBottomPosition + limitToBottomSize;
+        if (isActorBelowLimit) {
+            viewport.getCamera().position.y = actor.getPosition().y + limitToMiddleSize;
+            updateCameraConstants();
+            getFontScore().setColor(Color.RED);
+        } else {
+            getFontScore().setColor(Color.BLACK);
+        }
     }
 
     void updateCameraConstants() {

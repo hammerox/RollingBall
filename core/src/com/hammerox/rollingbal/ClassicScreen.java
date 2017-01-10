@@ -1,9 +1,10 @@
 package com.hammerox.rollingbal;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.hammerox.rollingbal.actors.Actor;
 import com.hammerox.rollingbal.actors.Obstacles;
 import com.hammerox.rollingbal.actors.Platform;
+import com.hammerox.rollingbal.actors.Character;
 
 
 import static com.hammerox.rollingbal.Constants.*;
@@ -16,8 +17,8 @@ public class ClassicScreen extends FallingScreen {
 
     private RollingBallGame.Level level;
 
-    private com.hammerox.rollingbal.actors.Character character;
-    private com.hammerox.rollingbal.actors.Obstacles obstacles;
+    private Character character;
+    private Obstacles obstacles;
 
 
     public ClassicScreen(RollingBallGame.Level level) {
@@ -46,6 +47,7 @@ public class ClassicScreen extends FallingScreen {
         // Update player
         character.move(delta);
 
+        // TODO - This goes to Observer Pattern inside character.move()
         // Player-Platform collisions
         Platform landedPlatform = character.getLandedPlatform(obstacles);
         boolean isCharacterDead = false;
@@ -53,38 +55,21 @@ public class ClassicScreen extends FallingScreen {
             if (landedPlatform.isDeadly())
                 isCharacterDead = true;
 
-        float characterY = character.getPosition().y;
+        moveCameraWithActor(delta, character);
+        updateScore(character);
 
-        // Update camera
-        boolean isCharacterBelowLimit = characterY < getCameraBottomPosition() + getLimitToBottomSize();
-        if (isCharacterBelowLimit) {
-            followCharacter(characterY);
-            getFontScore().setColor(Color.RED);
-        } else {
-            getFontScore().setColor(Color.BLACK);
-        }
-
-        if (hasGameStarted())
-            moveCamera(delta);
-
+        // TODO - This goes to Simple Factory Pattern
         // Create new obstacles, if necessary
         while (getCameraBottomPosition() - WORLD_SIZE < obstacles.getLastPosition()) {
             obstacles.addObstacle();
         }
-
         // Remove obstacle from top, if necessary
         boolean isObstacleAboveScreen = obstacles.get(0).getPosition().y > getCameraTopPosition();
         if (isObstacleAboveScreen)
             obstacles.remove(0);
 
-
-        // Update score if better
-        boolean isToUpdateScore = getScore() < -characterY;
-        if (isToUpdateScore)
-            setScore(- Math.round(characterY));
-
         // End game if player lose
-        boolean isCharacterAboveScreen = characterY - BALL_RADIUS > getCameraTopPosition();
+        boolean isCharacterAboveScreen = character.getPosition().y - BALL_RADIUS > getCameraTopPosition();
         if (isCharacterAboveScreen || isCharacterDead)
             setGameOver(true);
     }
@@ -94,16 +79,16 @@ public class ClassicScreen extends FallingScreen {
     public void renderActors() {
         ShapeRenderer shapeRenderer = getShapeRenderer();
 
-        // SHAPE RENDER
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-
-        // Render obstacles
         obstacles.render(shapeRenderer);
-
-        // Render character
         character.render(shapeRenderer);
-
         shapeRenderer.end();
+    }
+
+    private void updateScore(Actor actor) {
+        boolean isToUpdateScore = getScore() < -actor.getPosition().y;
+        if (isToUpdateScore)
+            setScore(- Math.round(actor.getPosition().y));
     }
 
 }
