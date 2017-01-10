@@ -13,12 +13,20 @@ import static com.hammerox.rollingbal.Constants.*;
 
 public class Platform extends Actor {
 
-    public Vector2 position;
-    public Vector2 size;
-    public float top;
+    private boolean isDeadly = false;
 
-    public boolean isDeadly = false;
+    public Platform(Vector2 position) {
+        super(position, PLAT_SIZE_DEFAULT);
+    }
 
+    public Platform(Vector2 position, Vector2 size) {
+        super(position, size);
+    }
+
+    public Platform(Vector2 position, Vector2 size, boolean isDeadly) {
+        this(position, size);
+        this.isDeadly = isDeadly;
+    }
 
     @Override
     public void move(float delta) {
@@ -33,35 +41,7 @@ public class Platform extends Actor {
             shapeRenderer.setColor(Color.BLUE);
         }
 
-        shapeRenderer.rect(position.x, position.y, size.x, size.y);
-    }
-
-    public Platform(Vector2 position) {
-        this.position = position;
-        this.size = PLAT_SIZE_DEFAULT;
-        top = position.y + size.y;
-    }
-
-    public Platform(Vector2 position, Vector2 size) {
-        this.position = position;
-        this.size = size;
-        top = position.y + size.y;
-    }
-
-    public Platform(Vector2 position, Vector2 size, boolean isDeadly) {
-        this(position, size);
-        this.isDeadly = isDeadly;
-    }
-
-
-    public void render(ShapeRenderer shapeRenderer) {
-        if (isDeadly) {
-            shapeRenderer.setColor(Color.RED);
-        } else {
-            shapeRenderer.setColor(Color.BLUE);
-        }
-
-        shapeRenderer.rect(position.x, position.y, size.x, size.y);
+        shapeRenderer.rect(getPosition().x, getPosition().y, getSize().x, getSize().y);
     }
 
     public static Platform newRandomPlatform(float x0, float y0, float x1, float y1) {
@@ -69,5 +49,17 @@ public class Platform extends Actor {
         position.x = MathUtils.random() * (x1 - x0) + x0;
         position.y = MathUtils.random() * (y1 - y0) + y0;
         return new Platform(position);
+    }
+
+    /*
+    * GETTERS AND SETTERS
+    * */
+
+    public boolean isDeadly() {
+        return isDeadly;
+    }
+
+    public void setDeadly(boolean deadly) {
+        isDeadly = deadly;
     }
 }

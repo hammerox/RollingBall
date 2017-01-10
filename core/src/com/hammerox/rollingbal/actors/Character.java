@@ -116,15 +116,15 @@ public class Character extends Actor implements InputProcessor{
     public boolean landedOnPlatform(Platform platform) {
         float yBefore = lastPosition.y - BALL_RADIUS;
         float yAfter = position.y - BALL_RADIUS;
-        float top = platform.top;
+        float top = platform.getTop();
 
         boolean wasOver = removeImprecision(yBefore) >= removeImprecision(top);
         boolean isUnder = yAfter < top;
-        boolean isInside = position.x >= platform.position.x
-                && position.x <= platform.position.x + platform.size.x;
+        boolean isInside = position.x >= platform.getPosition().x
+                && position.x <= platform.getPosition().x + platform.getSize().x;
 
         if (wasOver && isUnder && isInside) {
-            land(platform.top);
+            land(platform.getTop());
             return true;
         }
 

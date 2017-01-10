@@ -34,14 +34,14 @@ public class Obstacle {
 
     public Obstacle(Vector2 gapPosition, float gapSize, boolean bothAreDeadly) {
         this(gapPosition, gapSize);
-        left.isDeadly = bothAreDeadly;
-        right.isDeadly = bothAreDeadly;
+        left.setDeadly(bothAreDeadly);
+        right.setDeadly(bothAreDeadly);
     }
 
     public Obstacle(Vector2 gapPosition, float gapSize, boolean leftIsDeadly, boolean rightIsDeadly) {
         this(gapPosition, gapSize);
-        left.isDeadly = leftIsDeadly;
-        right.isDeadly = rightIsDeadly;
+        left.setDeadly(leftIsDeadly);
+        right.setDeadly(rightIsDeadly);
     }
 
     public void render(ShapeRenderer shapeRenderer) {

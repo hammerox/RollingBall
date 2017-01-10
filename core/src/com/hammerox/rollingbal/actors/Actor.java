@@ -24,7 +24,7 @@ public abstract class Actor {
 
         size = new Vector2(width, height);
     }
-    
+
     public Actor(Vector2 position, Vector2 size) {
         this(position.x, position.y, size.x, size.y);
     }
@@ -83,5 +83,13 @@ public abstract class Actor {
 
     public void setVelocity(Vector2 velocity) {
         this.velocity = velocity;
+    }
+
+    public float getTop() {
+        return position.y + size.y;
+    }
+
+    public float getRight() {
+        return position.x + size.x;
     }
 }
