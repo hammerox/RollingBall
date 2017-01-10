@@ -10,43 +10,35 @@ import static com.hammerox.rollingbal.Constants.*;
  * Created by Mauricio on 27-Dec-16.
  */
 
-public class Obstacle {
+public class Obstacle extends Actor {
 
-    private Vector2 gapPosition;
-    private Vector2 gapSize;
+    private Platform leftPlat;
+    private Platform rightPlat;
 
-    private Platform left;
-    private Platform right;
+    public Obstacle(Vector2 gapPosition, float gapSize, boolean leftIsDeadly, boolean rightIsDeadly) {
+        super(gapPosition, new Vector2(gapSize, PLAT_SIZE_DEFAULT.y));
+
+        leftPlat = createLeftPlat(leftIsDeadly);
+        rightPlat = createRightPlat(rightIsDeadly);
+    }
 
     public Obstacle(Vector2 gapPosition, float gapSize) {
-        this.gapPosition = gapPosition;
-        this.gapSize = PLAT_SIZE_DEFAULT.cpy();
-        this.gapSize.x = gapSize;
-
-        Vector2 leftPosition = new Vector2(0, gapPosition.y);
-        Vector2 leftSize = new Vector2(gapPosition.x, this.gapSize.y);
-        left = new Platform(leftPosition, leftSize);
-
-        Vector2 rightPosition = new Vector2(gapPosition.x + this.gapSize.x, gapPosition.y);
-        Vector2 rightSize = new Vector2(WORLD_SIZE - (gapPosition.x + this.gapSize.x), this.gapSize.y);
-        right = new Platform(rightPosition, rightSize);
+        this(gapPosition, gapSize, false, false);
     }
 
     public Obstacle(Vector2 gapPosition, float gapSize, boolean bothAreDeadly) {
-        this(gapPosition, gapSize);
-        left.setDeadly(bothAreDeadly);
-        right.setDeadly(bothAreDeadly);
+        this(gapPosition, gapSize, bothAreDeadly, bothAreDeadly);
     }
 
-    public Obstacle(Vector2 gapPosition, float gapSize, boolean leftIsDeadly, boolean rightIsDeadly) {
-        this(gapPosition, gapSize);
-        left.setDeadly(leftIsDeadly);
-        right.setDeadly(rightIsDeadly);
+    @Override
+    public void move(float delta) {
+        // Do nothing
     }
 
-    public void render(ShapeRenderer shapeRenderer) {
-        left.render(shapeRenderer);
-        right.render(shapeRenderer);
+    @Override
+    public void renderShape(ShapeRenderer shapeRenderer) {
+        leftPlat.render(shapeRenderer);
+        rightPlat.render(shapeRenderer);
     }
 
     public static Obstacle randomObstacle(float positionY, boolean isDeadly) {
@@ -68,40 +60,35 @@ public class Obstacle {
         return position;
     }
 
+    private Platform createLeftPlat(boolean isDeadly) {
+        Vector2 leftPosition = new Vector2(0, getPosition().y);
+        Vector2 leftSize = new Vector2(getPosition().x, getSize().y);
+        return new Platform(leftPosition, leftSize, isDeadly);
+    }
+
+    private Platform createRightPlat(boolean isDeadly) {
+        Vector2 rightPosition = new Vector2(getPosition().x + getSize().x, getPosition().y);
+        Vector2 rightSize = new Vector2(WORLD_SIZE - (getPosition().x + getSize().x), getSize().y);
+        return new Platform(rightPosition, rightSize, isDeadly);
+    }
+
 
     /*
     GETTERS AND SETTERS
     */
-
-    public Vector2 getGapPosition() {
-        return gapPosition;
+    public Platform getLeftPlat() {
+        return leftPlat;
     }
 
-    public void setGapPosition(Vector2 gapPosition) {
-        this.gapPosition = gapPosition;
+    public void setLeftPlat(Platform leftPlat) {
+        this.leftPlat = leftPlat;
     }
 
-    public Vector2 getGapSize() {
-        return gapSize;
+    public Platform getRightPlat() {
+        return rightPlat;
     }
 
-    public void setGapSize(Vector2 gapSize) {
-        this.gapSize = gapSize;
-    }
-
-    public Platform getLeft() {
-        return left;
-    }
-
-    public void setLeft(Platform left) {
-        this.left = left;
-    }
-
-    public Platform getRight() {
-        return right;
-    }
-
-    public void setRight(Platform right) {
-        this.right = right;
+    public void setRightPlat(Platform rightPlat) {
+        this.rightPlat = rightPlat;
     }
 }

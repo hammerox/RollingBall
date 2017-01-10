@@ -138,12 +138,12 @@ public class Character extends Actor implements InputProcessor{
      */
     public Platform getLandedPlatform(List<Obstacle> obstacleList) {
         for (Obstacle obstacle : obstacleList) {
-            if (landedOnPlatform(obstacle.getLeft())) {
-                return obstacle.getLeft();
+            if (landedOnPlatform(obstacle.getLeftPlat())) {
+                return obstacle.getLeftPlat();
             }
 
-            if (landedOnPlatform(obstacle.getRight())) {
-                return obstacle.getRight();
+            if (landedOnPlatform(obstacle.getRightPlat())) {
+                return obstacle.getRightPlat();
             }
         }
 

@@ -50,7 +50,7 @@ public class ClassicScreen extends FallingScreen {
         Platform landedPlatform = character.getLandedPlatform(obstacles);
         boolean isCharacterDead = false;
         if (landedPlatform != null)
-            if (landedPlatform.isDeadly)
+            if (landedPlatform.isDeadly())
                 isCharacterDead = true;
 
         float characterY = character.getPosition().y;
@@ -73,7 +73,7 @@ public class ClassicScreen extends FallingScreen {
         }
 
         // Remove obstacle from top, if necessary
-        boolean isObstacleAboveScreen = obstacles.get(0).getGapPosition().y > getCameraTopPosition();
+        boolean isObstacleAboveScreen = obstacles.get(0).getPosition().y > getCameraTopPosition();
         if (isObstacleAboveScreen)
             obstacles.remove(0);
 
