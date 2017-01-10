@@ -15,6 +15,13 @@ public abstract class Actor {
     private Vector2 lastVelocity;
     private Vector2 size;
 
+    public Actor(float initialX, float initialY) {
+        setPosition(new Vector2(initialX, initialY));
+        setVelocity(new Vector2());
+        setLastPosition(getPosition().cpy());
+        setLastVelocity(getVelocity().cpy());
+    }
+
     public abstract void renderShape(ShapeRenderer shapeRenderer);
     public abstract void move(float delta);
 

@@ -2,7 +2,7 @@ package com.hammerox.rollingbal.actors;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 
@@ -16,19 +16,20 @@ import static com.hammerox.rollingbal.Util.removeImprecision;
  * Created by Mauricio on 22-Dec-16.
  */
 
-public class Character extends InputAdapter {
+public class Character extends Actor implements InputProcessor{
 
-    private Vector2 position;
-    private Vector2 velocity;
+    private Vector2 position = getPosition();
+    private Vector2 velocity = getVelocity();
 
-    private Vector2 lastPosition;
-    private Vector2 lastVelocity;
+    private Vector2 lastPosition = getLastPosition();
+    private Vector2 lastVelocity = getLastVelocity();
 
     private boolean isFalling = false;
     private boolean isLanded = false;
 
 
-    public Character() {
+    public Character(float x, float y) {
+        super(x,y);
         Gdx.input.setInputProcessor(this);
     }
 
@@ -41,34 +42,34 @@ public class Character extends InputAdapter {
         lastVelocity = velocity.cpy();
     }
 
-
-    public void update(float delta) {
+    @Override
+    public void move(float delta) {
         // INPUT RESPONSE
-            // Accelerometer
+        // Accelerometer
         float accelerometer;
 
         accelerometer = -Gdx.input.getAccelerometerX();
         velocity.x = accelerometer * delta * ACCELEROMETER_FACTOR;
 
-            // A
+        // A
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
             velocity.x = - BALL_INPUT_VELOCITY;
         }
-            // D
+        // D
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
             velocity.x = BALL_INPUT_VELOCITY;
         }
 
         // UPDATE
-            // Adding gravity
+        // Adding gravity
         if (isFalling)
             velocity.mulAdd(WORLD_GRAVITY, delta);
 
-            // Position
+        // Position
         position.mulAdd(velocity, delta);
 
         // COLLISIONS
-            // With walls
+        // With walls
         if (position.x - BALL_RADIUS < 0) {
             position.x = BALL_RADIUS;
         } else if (position.x + BALL_RADIUS > WORLD_SIZE) {
@@ -76,32 +77,58 @@ public class Character extends InputAdapter {
         }
     }
 
-
-    public void render(ShapeRenderer shapeRenderer) {
-        // FINISH UPDATING
-        lastPosition.set(position);
-        lastVelocity.set(velocity);
-
+    @Override
+    public void renderShape(ShapeRenderer shapeRenderer) {
         // RENDER
         shapeRenderer.setColor(0.5f, 0, 0, 1);
         shapeRenderer.circle(position.x, position.y, BALL_RADIUS, 50);
     }
 
-    @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        return false;
-    }
+//    public void update(float delta) {
+//        // INPUT RESPONSE
+//            // Accelerometer
+//        float accelerometer;
+//
+//        accelerometer = -Gdx.input.getAccelerometerX();
+//        velocity.x = accelerometer * delta * ACCELEROMETER_FACTOR;
+//
+//            // A
+//        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+//            velocity.x = - BALL_INPUT_VELOCITY;
+//        }
+//            // D
+//        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+//            velocity.x = BALL_INPUT_VELOCITY;
+//        }
+//
+//        // UPDATE
+//            // Adding gravity
+//        if (isFalling)
+//            velocity.mulAdd(WORLD_GRAVITY, delta);
+//
+//            // Position
+//        position.mulAdd(velocity, delta);
+//
+//        // COLLISIONS
+//            // With walls
+//        if (position.x - BALL_RADIUS < 0) {
+//            position.x = BALL_RADIUS;
+//        } else if (position.x + BALL_RADIUS > WORLD_SIZE) {
+//            position.x = WORLD_SIZE - BALL_RADIUS;
+//        }
+//    }
 
-    @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        return false;
-    }
 
+//    public void render(ShapeRenderer shapeRenderer) {
+//        // FINISH UPDATING
+//        lastPosition.set(position);
+//        lastVelocity.set(velocity);
+//
+//        // RENDER
+//        shapeRenderer.setColor(0.5f, 0, 0, 1);
+//        shapeRenderer.circle(position.x, position.y, BALL_RADIUS, 50);
+//    }
 
-    @Override
-    public boolean keyDown(int keycode) {
-        return false;
-    }
 
     @Override
     public boolean keyUp(int keycode) {
@@ -111,6 +138,41 @@ public class Character extends InputAdapter {
                 velocity.x = 0;
                 break;
         }
+        return false;
+    }
+
+    @Override
+    public boolean keyDown(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyTyped(char character) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        return false;
+    }
+
+    @Override
+    public boolean mouseMoved(int screenX, int screenY) {
+        return false;
+    }
+
+    @Override
+    public boolean scrolled(int amount) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         return false;
     }
 
@@ -175,23 +237,6 @@ public class Character extends InputAdapter {
     /*
     GETTERS AND SETTERS
     */
-
-    public Vector2 getLastPosition() {
-        return lastPosition;
-    }
-
-    public Vector2 getLastVelocity() {
-        return lastVelocity;
-    }
-
-    public Vector2 getPosition() {
-        return position;
-    }
-
-    public Vector2 getVelocity() {
-        return velocity;
-    }
-
     public boolean isFalling() {
         return isFalling;
     }

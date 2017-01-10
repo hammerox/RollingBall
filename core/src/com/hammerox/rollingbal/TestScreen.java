@@ -34,8 +34,7 @@ public class TestScreen extends ScreenAdapter {
         shapeRenderer = new ShapeRenderer();
         viewport = new ExtendViewport(WORLD_SIZE, WORLD_SIZE);
 
-        character = new com.hammerox.rollingbal.actors.Character();
-        character.init(WORLD_SIZE/2, WORLD_SIZE/2);
+        character = new com.hammerox.rollingbal.actors.Character(WORLD_SIZE/2, WORLD_SIZE/2);
 
         allPlatforms = new LinkedList<com.hammerox.rollingbal.actors.Platform>();
         float add = WORLD_SIZE / 5.0f;
@@ -65,7 +64,7 @@ public class TestScreen extends ScreenAdapter {
 
         // UPDATE
             // Update ball
-        character.update(delta);
+        character.move(delta);
 
             // Update camera
         viewport.getCamera().position.y =

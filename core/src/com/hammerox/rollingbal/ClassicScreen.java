@@ -30,8 +30,7 @@ public class ClassicScreen extends FallingScreen {
     void newGame() {
         super.newGame();
 
-        character = new com.hammerox.rollingbal.actors.Character();
-        character.init(WORLD_SIZE/2, 0);
+        character = new com.hammerox.rollingbal.actors.Character(WORLD_SIZE/2, 0);
         obstacles = new Obstacles(level);
     }
 
@@ -45,7 +44,7 @@ public class ClassicScreen extends FallingScreen {
     public void updateActors(float delta) {
 
         // Update player
-        character.update(delta);
+        character.move(delta);
 
         // Player-Platform collisions
         Platform landedPlatform = character.getLandedPlatform(obstacles);
