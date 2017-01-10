@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 import static com.hammerox.rollingbal.Constants.*;
+import static com.hammerox.rollingbal.Util.removeImprecision;
 
 /**
  * Created by Mauricio on 23-Dec-16.
@@ -42,6 +43,35 @@ public class Platform extends Actor {
         }
 
         shapeRenderer.rect(getPosition().x, getPosition().y, getSize().x, getSize().y);
+    }
+
+    @Override
+    public boolean checkCollision(Actor subject) {
+        if (subject instanceof Character) {
+            if (isCharacterColliding((Character) subject)) {
+                subject.onCollision(this);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public void onCollision(Actor subject) {
+        // Do nothing
+    }
+
+    private boolean isCharacterColliding(Character character) {
+        float yBefore = character.getLastPosition().y - BALL_RADIUS;
+        float yAfter = character.getPosition().y - BALL_RADIUS;
+
+        boolean wasOver = removeImprecision(yBefore) >= removeImprecision(getTop());
+        boolean isUnder = yAfter < getTop();
+        boolean isInside = character.getPosition().x >= getPosition().x
+                && character.getPosition().x <= getRight();
+
+        return wasOver && isUnder && isInside;
     }
 
     public static Platform newRandomPlatform(float x0, float y0, float x1, float y1) {

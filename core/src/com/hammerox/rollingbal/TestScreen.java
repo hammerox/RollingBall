@@ -72,11 +72,6 @@ public class TestScreen extends ScreenAdapter {
                 ? character.getPosition().y + CAMERA_BALL_OFFSET * WORLD_SIZE
                 : WORLD_SIZE / 2;
 
-            // Ball-Platform collisions
-        for (com.hammerox.rollingbal.actors.Platform platform : allPlatforms) {
-            character.landedOnPlatform(platform);
-        }
-
         // RENDER
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(Color.CYAN);

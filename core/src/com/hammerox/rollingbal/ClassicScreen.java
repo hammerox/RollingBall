@@ -2,8 +2,8 @@ package com.hammerox.rollingbal;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.hammerox.rollingbal.actors.Actor;
+import com.hammerox.rollingbal.actors.DoublePlatform;
 import com.hammerox.rollingbal.actors.Obstacles;
-import com.hammerox.rollingbal.actors.Platform;
 import com.hammerox.rollingbal.actors.Character;
 
 
@@ -47,14 +47,6 @@ public class ClassicScreen extends FallingScreen {
         // Update player
         character.move(delta);
 
-        // TODO - This goes to Observer Pattern inside character.move()
-        // Player-Platform collisions
-        Platform landedPlatform = character.getLandedPlatform(obstacles);
-        boolean isCharacterDead = false;
-        if (landedPlatform != null)
-            if (landedPlatform.isDeadly())
-                isCharacterDead = true;
-
         moveCameraWithActor(delta, character);
         updateScore(character);
 
@@ -62,15 +54,21 @@ public class ClassicScreen extends FallingScreen {
         // Create new obstacles, if necessary
         while (getCameraBottomPosition() - WORLD_SIZE < obstacles.getLastPosition()) {
             obstacles.addObstacle();
+            int position = obstacles.size() - 1;
+            DoublePlatform plat = obstacles.get(position);
+
+            character.addObstacle(plat);
         }
         // Remove obstacle from top, if necessary
         boolean isObstacleAboveScreen = obstacles.get(0).getPosition().y > getCameraTopPosition();
-        if (isObstacleAboveScreen)
+        if (isObstacleAboveScreen) {
+            character.removeObstacle(obstacles.get(0));
             obstacles.remove(0);
+        }
 
         // End game if player lose
         boolean isCharacterAboveScreen = character.getPosition().y - BALL_RADIUS > getCameraTopPosition();
-        if (isCharacterAboveScreen || isCharacterDead)
+        if (isCharacterAboveScreen || character.isDead())
             setGameOver(true);
     }
 

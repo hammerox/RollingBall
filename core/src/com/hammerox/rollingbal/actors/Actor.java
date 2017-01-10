@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.Vector2;
  * Created by Mauricio on 10-Jan-17.
  */
 
-public abstract class Actor {
+public abstract class Actor implements CollisionListener {
 
     private Vector2 position;
     private Vector2 velocity;

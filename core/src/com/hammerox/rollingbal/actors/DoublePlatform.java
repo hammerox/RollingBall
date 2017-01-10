@@ -41,6 +41,20 @@ public class DoublePlatform extends Actor {
         rightPlat.render(shapeRenderer);
     }
 
+    @Override
+    public boolean checkCollision(Actor subject) {
+        if (subject instanceof Character) {
+            leftPlat.checkCollision(subject);
+            rightPlat.checkCollision(subject);
+        }
+        return false;
+    }
+
+    @Override
+    public void onCollision(Actor subject) {
+        // Do nothing
+    }
+
     public static DoublePlatform randomObstacle(float positionY, boolean isDeadly) {
         float gapSize = randomGapSize();
         Vector2 position = randomGapPosition(gapSize, positionY);
