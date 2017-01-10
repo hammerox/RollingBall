@@ -18,9 +18,9 @@ public abstract class Actor {
     public abstract void renderShape(ShapeRenderer shapeRenderer);
     public abstract void move(float delta);
 
-    public void update(float delta) {
-        move(delta);
+    public void render(ShapeRenderer renderer) {
         saveMovement();
+        renderShape(renderer);
     }
 
     public void saveMovement() {
