@@ -28,6 +28,10 @@ public class Character extends Actor implements InputProcessor{
         Gdx.input.setInputProcessor(this);
     }
 
+    public Character() {
+        this(WORLD_SIZE/2, 0);
+    }
+
     @Override
     public void move(float delta) {
         // INPUT RESPONSE

@@ -55,7 +55,10 @@ public class DoublePlatform extends Actor {
         // Do nothing
     }
 
-    public static DoublePlatform randomObstacle(float positionY, boolean isDeadly) {
+    /*
+    * CREATION
+    * */
+    public static DoublePlatform create(float positionY, boolean isDeadly) {
         float gapSize = randomGapSize();
         Vector2 position = randomGapPosition(gapSize, positionY);
 
