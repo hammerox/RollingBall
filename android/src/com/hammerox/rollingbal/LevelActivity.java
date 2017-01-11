@@ -12,7 +12,6 @@ import android.widget.LinearLayout;
 
 import com.hammerox.rollingbal.databinding.ActivityLevelBinding;
 
-import static com.hammerox.rollingbal.RollingBallGame.*;
 
 public class LevelActivity extends AppCompatActivity {
 

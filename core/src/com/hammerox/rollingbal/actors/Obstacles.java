@@ -14,11 +14,11 @@ import static com.hammerox.rollingbal.Constants.*;
 
 public class Obstacles extends ArrayList<DoublePlatform> {
 
-    private RollingBallGame.Level level;
+    private Level level;
     private int totalCount = 0;
     private float lastPosition = 0;
 
-    public Obstacles(RollingBallGame.Level level) {
+    public Obstacles(Level level) {
         this.level = level;
     }
 
@@ -68,11 +68,11 @@ public class Obstacles extends ArrayList<DoublePlatform> {
         this.lastPosition = lastPosition;
     }
 
-    public RollingBallGame.Level getLevel() {
+    public Level getLevel() {
         return level;
     }
 
-    public void setLevel(RollingBallGame.Level level) {
+    public void setLevel(Level level) {
         this.level = level;
     }
 

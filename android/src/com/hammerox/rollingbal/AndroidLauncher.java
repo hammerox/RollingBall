@@ -15,7 +15,7 @@ public class AndroidLauncher extends AndroidApplication {
 		super.onCreate(savedInstanceState);
 
         String levelName = getIntent().getStringExtra(LevelActivity.TAG_LEVEL);
-        RollingBallGame.Level level = RollingBallGame.Level.valueOf(levelName);
+        Level level = Level.valueOf(levelName);
 
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
         game = new RollingBallGame(level);

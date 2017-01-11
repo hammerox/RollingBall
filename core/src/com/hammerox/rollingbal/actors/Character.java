@@ -16,7 +16,7 @@ import static com.hammerox.rollingbal.Constants.*;
 
 public class Character extends Actor implements InputProcessor{
 
-    private boolean isFalling = false;
+    private boolean isGravityOn = false;
     private boolean isDead = false;
     private List<Actor> obstacles;
 
@@ -48,7 +48,7 @@ public class Character extends Actor implements InputProcessor{
 
         // UPDATE
         // Adding gravity
-        if (isFalling)
+        if (isGravityOn)
             getVelocity().mulAdd(WORLD_GRAVITY, delta);
 
         // Position
@@ -162,12 +162,12 @@ public class Character extends Actor implements InputProcessor{
     /*
     GETTERS AND SETTERS
     */
-    public boolean isFalling() {
-        return isFalling;
+    public boolean isGravityOn() {
+        return isGravityOn;
     }
 
-    public void setFalling(boolean falling) {
-        isFalling = falling;
+    public void setGravityOn(boolean gravityOn) {
+        isGravityOn = gravityOn;
     }
 
     public boolean isDead() {

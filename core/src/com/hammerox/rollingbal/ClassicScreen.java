@@ -5,7 +5,11 @@ import com.hammerox.rollingbal.actors.Actor;
 import com.hammerox.rollingbal.actors.DoublePlatform;
 import com.hammerox.rollingbal.actors.Obstacles;
 import com.hammerox.rollingbal.actors.Character;
+import com.hammerox.rollingbal.factory.ActorFactory;
 
+
+import java.util.LinkedList;
+import java.util.List;
 
 import static com.hammerox.rollingbal.Constants.*;
 
@@ -15,15 +19,20 @@ import static com.hammerox.rollingbal.Constants.*;
 
 public class ClassicScreen extends FallingScreen {
 
-    private RollingBallGame.Level level;
+    private Level level;
+
+    private ActorFactory factory;
 
     private Character character;
     private Obstacles obstacles;
+    private List<Actor> obsList;
 
 
-    public ClassicScreen(RollingBallGame.Level level) {
+    public ClassicScreen(Level level) {
         super(level.gameSpeed);
         this.level = level;
+
+        factory = level.factory;
     }
 
 
@@ -33,12 +42,15 @@ public class ClassicScreen extends FallingScreen {
 
         character = new com.hammerox.rollingbal.actors.Character(WORLD_SIZE/2, 0);
         obstacles = new Obstacles(level);
+
+        obsList = new LinkedList<Actor>();
+        character.setObstacles(obsList);
     }
 
     @Override
     void startGame() {
         super.startGame();
-        character.setFalling(true);
+        character.setGravityOn(true);
     }
 
     @Override
@@ -67,6 +79,7 @@ public class ClassicScreen extends FallingScreen {
         }
 
         // End game if player lose
+        // TODO - Send isActorAboveScreen to FallingScreen and abstract it to Actor (if actor instanceof Character, use radius, else...)
         boolean isCharacterAboveScreen = character.getPosition().y - BALL_RADIUS > getCameraTopPosition();
         if (isCharacterAboveScreen || character.isDead())
             setGameOver(true);
