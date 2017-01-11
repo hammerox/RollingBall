@@ -89,9 +89,11 @@ public abstract class FallingScreen extends ScreenAdapter {
             }
         } else {
             updateActors(delta);
+            isGameOver = gameOverCondition();
         }
     }
 
+    public abstract boolean gameOverCondition();
     public abstract void updateActors(float delta);
     public abstract void renderActors();
 

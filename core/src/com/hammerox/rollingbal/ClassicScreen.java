@@ -42,6 +42,12 @@ public class ClassicScreen extends FallingScreen {
     }
 
     @Override
+    public boolean gameOverCondition() {
+        boolean isCharacterAboveScreen = character.getPosition().y - BALL_RADIUS > getCameraTopPosition();
+        return character.isDead() || isCharacterAboveScreen;
+    }
+
+    @Override
     public void updateActors(float delta) {
 
         // Update player
@@ -51,12 +57,6 @@ public class ClassicScreen extends FallingScreen {
         updateScore(character);
 
         obstacles.generationAndRemovalCheck(getCameraBottomPosition(), getCameraTopPosition());
-
-        // End game if player lose
-        // TODO - Send isActorAboveScreen to FallingScreen and abstract it to Actor (if actor instanceof Character, use radius, else...)
-        boolean isCharacterAboveScreen = character.getPosition().y - BALL_RADIUS > getCameraTopPosition();
-        if (isCharacterAboveScreen || character.isDead())
-            setGameOver(true);
     }
 
 
