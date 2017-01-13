@@ -31,18 +31,21 @@ public class Platform extends Actor {
 
     @Override
     public void move(float delta) {
-        // Do nothing
+        // Don't move
     }
 
     @Override
     public void renderShape(ShapeRenderer shapeRenderer) {
+        setColor(shapeRenderer);
+        shapeRenderer.rect(getPosition().x, getPosition().y, getSize().x, getSize().y);
+    }
+
+    private void setColor(ShapeRenderer shapeRenderer) {
         if (isDeadly) {
             shapeRenderer.setColor(Color.RED);
         } else {
             shapeRenderer.setColor(Color.BLUE);
         }
-
-        shapeRenderer.rect(getPosition().x, getPosition().y, getSize().x, getSize().y);
     }
 
     @Override
@@ -53,7 +56,6 @@ public class Platform extends Actor {
                 return true;
             }
         }
-
         return false;
     }
 
@@ -63,15 +65,24 @@ public class Platform extends Actor {
     }
 
     private boolean isCharacterColliding(Character character) {
+        return wasCharacterOver(character)
+                && isCharacterUnder(character)
+                && isCharacterInside(character);
+    }
+
+    private boolean wasCharacterOver(Character character) {
         float yBefore = character.getLastPosition().y - BALL_RADIUS;
+        return removeImprecision(yBefore) >= removeImprecision(getTop());
+    }
+
+    private boolean isCharacterUnder(Character character) {
         float yAfter = character.getPosition().y - BALL_RADIUS;
+        return yAfter < getTop();
+    }
 
-        boolean wasOver = removeImprecision(yBefore) >= removeImprecision(getTop());
-        boolean isUnder = yAfter < getTop();
-        boolean isInside = character.getPosition().x >= getPosition().x
+    private boolean isCharacterInside(Character character) {
+        return character.getPosition().x >= getPosition().x
                 && character.getPosition().x <= getRight();
-
-        return wasOver && isUnder && isInside;
     }
 
     public static Platform newRandomPlatform(float x0, float y0, float x1, float y1) {
