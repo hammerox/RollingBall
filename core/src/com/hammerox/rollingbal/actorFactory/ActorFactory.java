@@ -15,7 +15,7 @@ import static com.hammerox.rollingbal.Constants.*;
 public abstract class ActorFactory {
 
     public abstract Character addCharacter();
-    public abstract void addObstacle(Obstacles obstacleList);
+    public abstract void addObstacle(Obstacles obstacleList, float height);
 
     public static DoublePlatform createRandomDoublePlatform(float positionY, boolean isDeadly) {
         float gapSize = randomGapSize();

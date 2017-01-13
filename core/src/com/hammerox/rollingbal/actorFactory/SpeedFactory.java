@@ -16,8 +16,7 @@ public class SpeedFactory extends ActorFactory {
     }
 
     @Override
-    public void addObstacle(Obstacles obstacleList) {
-        float height = obstacleList.getLastObstacleHeight();
+    public void addObstacle(Obstacles obstacleList, float height) {
         DoublePlatform doublePlatform = createRandomDoublePlatform(height, false);
         obstacleList.add(doublePlatform);
     }

@@ -38,7 +38,7 @@ public class Obstacles extends ArrayList<Actor> {
     }
 
     private void addBelowScreen(float cameraBottom) {
-        while (cameraBottom - WORLD_SIZE < getLastObstacleHeight()) {
+        while (cameraBottom - WORLD_SIZE < lastObstacleHeight) {
             addObstacle();
         }
     }
@@ -51,7 +51,7 @@ public class Obstacles extends ArrayList<Actor> {
 
     public void addObstacle() {
         lastObstacleHeight -= OBSTACLE_DISTANCE;
-        level.factory.addObstacle(this);
+        level.factory.addObstacle(this, lastObstacleHeight);
     }
 
 

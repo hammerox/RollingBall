@@ -19,8 +19,7 @@ public class SpikesFactory extends ActorFactory {
     }
 
     @Override
-    public void addObstacle(Obstacles obstacleList) {
-        float height = obstacleList.getLastObstacleHeight();
+    public void addObstacle(Obstacles obstacleList, float height) {
         DoublePlatform doublePlatform = (MathUtils.random() > SPIKE_CREATION_CHANCE)
                 ? createRandomDoublePlatform(height, false)
                 : createRandomDoublePlatform(height, true);

@@ -1,7 +1,6 @@
 package com.hammerox.rollingbal;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.hammerox.rollingbal.actorFactory.ActorFactory;
 import com.hammerox.rollingbal.actors.Actor;
 import com.hammerox.rollingbal.actors.Character;
 

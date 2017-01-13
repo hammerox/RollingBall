@@ -16,13 +16,8 @@ public class DoublePlatform extends Actor {
 
     public DoublePlatform(Vector2 gapPosition, float gapSize, boolean leftIsDeadly, boolean rightIsDeadly) {
         super(gapPosition, new Vector2(gapSize, PLAT_SIZE_DEFAULT.y));
-
         leftPlat = setLeftPlat(leftIsDeadly);
         rightPlat = setRightPlat(rightIsDeadly);
-    }
-
-    public DoublePlatform(Vector2 gapPosition, float gapSize) {
-        this(gapPosition, gapSize, false, false);
     }
 
     public DoublePlatform(Vector2 gapPosition, float gapSize, boolean bothAreDeadly) {
