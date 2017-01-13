@@ -21,7 +21,7 @@ android {
         exclude 'META-INF/robovm/ios/robovm.xml'
     }
     defaultConfig {
-        applicationId "com.hammerox.rollingbal"
+        applicationId "com.hammerox.rollingball"
         minSdkVersion 16
         targetSdkVersion 25
     }
@@ -73,7 +73,7 @@ task run(type: Exec) {
     }
 
     def adb = path + "/platform-tools/adb"
-    commandLine "$adb", 'shell', 'am', 'start', '-n', 'com.hammerox.rollingbal/com.hammerox.rollingbal.AndroidLauncher'
+    commandLine "$adb", 'shell', 'am', 'start', '-n', 'com.hammerox.rollingball/com.hammerox.rollingball.AndroidLauncher'
 }
 
 // sets up the Android Eclipse project, using the old Ant based build.
