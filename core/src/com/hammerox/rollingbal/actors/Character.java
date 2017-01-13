@@ -34,39 +34,37 @@ public class Character extends Actor implements InputProcessor{
 
     @Override
     public void move(float delta) {
-        // INPUT RESPONSE
-        // Accelerometer
-        float accelerometer;
+        updateVelocity(delta);
+        getPosition().mulAdd(getVelocity(), delta);
+        checkCollision(this);
+    }
 
-        accelerometer = -Gdx.input.getAccelerometerX();
+    private void updateVelocity(float delta) {
+        updateVelocityWithAccelerometer(delta);
+        updateVelocityOnKeyboardInput();
+        addGravityToVelocity(delta);
+    }
+
+    private void updateVelocityWithAccelerometer(float delta) {
+        float accelerometer = -Gdx.input.getAccelerometerX();
         getVelocity().x = accelerometer * delta * ACCELEROMETER_FACTOR;
+    }
 
-        // A
-        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+    private void updateVelocityOnKeyboardInput() {
+        boolean pressedA = Gdx.input.isKeyPressed(Input.Keys.A);
+        boolean pressedD = Gdx.input.isKeyPressed(Input.Keys.D);
+        if (pressedA && pressedD) {
+            getVelocity().x = 0;
+        } else if (pressedA) {
             getVelocity().x = - BALL_INPUT_VELOCITY;
-        }
-        // D
-        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+        } else if (pressedD) {
             getVelocity().x = BALL_INPUT_VELOCITY;
         }
+    }
 
-        // UPDATE
-        // Adding gravity
+    private void addGravityToVelocity(float delta) {
         if (isGravityOn)
             getVelocity().mulAdd(WORLD_GRAVITY, delta);
-
-        // Position
-        getPosition().mulAdd(getVelocity(), delta);
-
-        // COLLISIONS
-        // With walls
-        if (getPosition().x - BALL_RADIUS < 0) {
-            getPosition().x = BALL_RADIUS;
-        } else if (getPosition().x + BALL_RADIUS > WORLD_SIZE) {
-            getPosition().x = WORLD_SIZE - BALL_RADIUS;
-        }
-
-        checkCollision(this);
     }
 
     @Override
@@ -89,12 +87,10 @@ public class Character extends Actor implements InputProcessor{
     @Override
     public boolean checkCollision(Actor subject) {
         if (subject == this) {
-            if (obstacles != null) {
-                for (Actor actor : obstacles) {
-                    boolean hasCollided = actor.checkCollision(this);
-                    if (hasCollided) return true;
-                }
-            }
+            keepCharacterInsideScreen();
+            boolean hasCollided = triggerCollisionChecks();
+            if (hasCollided)
+                return true;
         }
         return false;
     }
@@ -102,25 +98,32 @@ public class Character extends Actor implements InputProcessor{
     @Override
     public void onCollision(Actor subject) {
         if (subject instanceof Platform) {
-            land(subject.getTop());
-            if (((Platform) subject).isDeadly())
+            adjustMovementOnCollision(subject.getTop());
+            boolean isDeadly = ((Platform) subject).isDeadly();
+            if (isDeadly)
                 isDead = true;
         }
     }
 
-    public void addObstacle(Actor obstacle) {
-        obstacles.add(obstacle);
+    private void keepCharacterInsideScreen() {
+        if (getPosition().x - BALL_RADIUS < 0) {
+            getPosition().x = BALL_RADIUS;
+        } else if (getPosition().x + BALL_RADIUS > WORLD_SIZE) {
+            getPosition().x = WORLD_SIZE - BALL_RADIUS;
+        }
     }
 
-    public void removeObstacle(Actor obstacle) {
-        obstacles.remove(obstacle);
+    private boolean triggerCollisionChecks() {
+        if (obstacles != null) {
+            for (Actor obstacle : obstacles) {
+                boolean hasCollided = obstacle.checkCollision(this);
+                if (hasCollided) return true;
+            }
+        }
+        return false;
     }
 
-    /** Update character's position when landed on something.
-     *
-     * @param y = Is the surface's Y position which the character has landed.
-     */
-    public void land(float y) {
+    private void adjustMovementOnCollision(float y) {
         getVelocity().y = - getVelocity().y * BALL_BOUNCE_ABSORPTION;
         getPosition().y = y + BALL_RADIUS;
     }
