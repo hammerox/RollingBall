@@ -1,6 +1,7 @@
 package com.hammerox.rollingbal;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.hammerox.rollingbal.actorFactory.ActorFactory;
 import com.hammerox.rollingbal.actors.Actor;
 import com.hammerox.rollingbal.actors.Character;
 
@@ -14,7 +15,6 @@ import static com.hammerox.rollingbal.Constants.*;
 public class ClassicScreen extends FallingScreen {
 
     private Level level;
-
     private Character character;
     private Obstacles obstacles;
 
@@ -28,7 +28,7 @@ public class ClassicScreen extends FallingScreen {
     @Override
     void newGame() {
         super.newGame();
-        character = new Character();
+        character = level.factory.addCharacter();
         obstacles = new Obstacles(level);
         character.setObstacles(obstacles);
     }

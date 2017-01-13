@@ -14,8 +14,7 @@ import static com.hammerox.rollingbal.Constants.*;
 public class Obstacles extends ArrayList<Actor> {
 
     private Level level;
-    private int totalObstaclesCreated = 0;
-    private float lastPosition = 0;
+    private float lastObstacleHeight = 0;
 
     public Obstacles(Level level) {
         this.level = level;
@@ -24,8 +23,7 @@ public class Obstacles extends ArrayList<Actor> {
     @Override
     public void clear() {
         super.clear();
-        totalObstaclesCreated = 0;
-        lastPosition = 0;
+        lastObstacleHeight = 0;
     }
 
     public void renderAll(ShapeRenderer shapeRenderer) {
@@ -40,7 +38,7 @@ public class Obstacles extends ArrayList<Actor> {
     }
 
     private void addBelowScreen(float cameraBottom) {
-        while (cameraBottom - WORLD_SIZE < getLastPosition()) {
+        while (cameraBottom - WORLD_SIZE < getLastObstacleHeight()) {
             addObstacle();
         }
     }
@@ -52,21 +50,20 @@ public class Obstacles extends ArrayList<Actor> {
     }
 
     public void addObstacle() {
-        lastPosition -= OBSTACLE_DISTANCE;
-        add(ObstacleFactory.create(level, lastPosition));
-        totalObstaclesCreated++;
+        lastObstacleHeight -= OBSTACLE_DISTANCE;
+        level.factory.addObstacle(this);
     }
 
 
     /*
     * GETTERS AND SETTERS
     * */
-    public float getLastPosition() {
-        return lastPosition;
+    public float getLastObstacleHeight() {
+        return lastObstacleHeight;
     }
 
-    public void setLastPosition(float lastPosition) {
-        this.lastPosition = lastPosition;
+    public void setLastObstacleHeight(float lastObstacleHeight) {
+        this.lastObstacleHeight = lastObstacleHeight;
     }
 
     public Level getLevel() {
@@ -75,13 +72,5 @@ public class Obstacles extends ArrayList<Actor> {
 
     public void setLevel(Level level) {
         this.level = level;
-    }
-
-    public int getTotalObstaclesCreated() {
-        return totalObstaclesCreated;
-    }
-
-    public void setTotalObstaclesCreated(int totalObstaclesCreated) {
-        this.totalObstaclesCreated = totalObstaclesCreated;
     }
 }

@@ -88,7 +88,7 @@ public class Character extends Actor implements InputProcessor{
     public boolean checkCollision(Actor subject) {
         if (subject == this) {
             keepCharacterInsideScreen();
-            boolean hasCollided = triggerCollisionChecks();
+            boolean hasCollided = checkCollisionWithObstacles();
             if (hasCollided)
                 return true;
         }
@@ -113,7 +113,7 @@ public class Character extends Actor implements InputProcessor{
         }
     }
 
-    private boolean triggerCollisionChecks() {
+    private boolean checkCollisionWithObstacles() {
         if (obstacles != null) {
             for (Actor obstacle : obstacles) {
                 boolean hasCollided = obstacle.checkCollision(this);
