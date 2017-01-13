@@ -34,13 +34,18 @@ public class Obstacles extends ArrayList<Actor> {
         }
     }
 
-    public void generationAndRemovalCheck(float cameraBottom, float cameraTop) {
-        // Create new obstacles, if necessary
+    public void handleObstaclesOutsideScreen(float cameraBottom, float cameraTop) {
+        addBelowScreen(cameraBottom);
+        removeAboveScreen(cameraTop);
+    }
+
+    private void addBelowScreen(float cameraBottom) {
         while (cameraBottom - WORLD_SIZE < getLastPosition()) {
             addObstacle();
         }
+    }
 
-        // Remove obstacles from top, if necessary
+    private void removeAboveScreen(float cameraTop) {
         while (get(0).getPosition().y > cameraTop) {
             remove(0);
         }

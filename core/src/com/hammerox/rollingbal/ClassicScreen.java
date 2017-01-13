@@ -28,10 +28,8 @@ public class ClassicScreen extends FallingScreen {
     @Override
     void newGame() {
         super.newGame();
-
         character = new Character();
         obstacles = new Obstacles(level);
-
         character.setObstacles(obstacles);
     }
 
@@ -49,21 +47,16 @@ public class ClassicScreen extends FallingScreen {
 
     @Override
     public void updateActors(float delta) {
-
-        // Update player
         character.move(delta);
-
         moveCameraWithActor(delta, character);
         updateScore(character);
-
-        obstacles.generationAndRemovalCheck(getCameraBottomPosition(), getCameraTopPosition());
+        obstacles.handleObstaclesOutsideScreen(getCameraBottomPosition(), getCameraTopPosition());
     }
 
 
     @Override
     public void renderActors() {
         ShapeRenderer shapeRenderer = getShapeRenderer();
-
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         obstacles.renderAll(shapeRenderer);
         character.render(shapeRenderer);
